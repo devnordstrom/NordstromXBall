@@ -1,11 +1,11 @@
-[x] Create a game controller where a level or levels can be injected.
+ [x] Create a game controller where a level or levels can be injected.
 
-[] Enable player to "serve" or launch the ball initially in a better way.
+ [] Enable player to "serve" or launch the ball initially in a better way.
 
-[] Create smoother transitions between levels.
+ [] Create smoother transitions between levels.
 
-[] Enables balls to perform some action when bounced such as breaking or exploding etc.
+ [] Enables balls to perform some action when bounced such as breaking or exploding etc.
 
-[] Improve collission detection by calculating how many pixels the object will move.
+ [] Improve collission detection by calculating how many pixels the object will move.
 
-[] Create a survival/arcade mode.
+ [] Create a survival/arcade mode.
