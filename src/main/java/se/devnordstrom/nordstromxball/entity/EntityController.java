@@ -18,7 +18,7 @@ package se.devnordstrom.nordstromxball.entity;
 
 /**
  *
- * @author Orville Nordström
+ * @author Orville N
  */
 public interface EntityController
 {

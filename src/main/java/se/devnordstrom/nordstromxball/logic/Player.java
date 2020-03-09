@@ -22,13 +22,15 @@ package se.devnordstrom.nordstromxball.logic;
  */
 public class Player 
 {
-    private int points, brokenBricks, lives;
+    public static final int DEFAULT_STARTING_LIVES = 3;
+    
+    private int points, brokenBricks, lifeCount;
     
     private String name;
     
     public Player()
     {
-        this.lives = 3;
+        this.lifeCount = DEFAULT_STARTING_LIVES;
     }
     
     public int getPoints()
@@ -56,6 +58,11 @@ public class Player
         this.brokenBricks = brokenBricks;
     }
     
+    public void addBrokenBrick()
+    {
+        this.brokenBricks++;
+    }
+    
     public void setName(String name)
     {
         this.name = name;
@@ -66,23 +73,23 @@ public class Player
         return name;
     }
     
-    public void setLives(int lives)
+    public void setLifeCount(int lifeCount)
     {
-        this.lives = lives;
+        this.lifeCount = lifeCount;
     }
     
-    public int getLives()
+    public int getLifeCount()
     {
-        return this.lives;
+        return this.lifeCount;
     }
     
     public void addLife()
     {
-        this.lives++;
+        this.lifeCount++;
     }
     
     public void takeLife()
     {
-        this.lives--;
+        this.lifeCount--;
     }
 }

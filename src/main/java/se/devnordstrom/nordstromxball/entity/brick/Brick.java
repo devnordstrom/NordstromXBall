@@ -20,15 +20,19 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.util.Random;
 import se.devnordstrom.nordstromxball.entity.PaintableEntity;
 import se.devnordstrom.nordstromxball.entity.powerup.Powerup;
+import se.devnordstrom.nordstromxball.entity.powerup.PowerupKind;
 
 /**
  *
- * @author Orville Nordström
+ * @author Orville N
  */
 public class Brick implements PaintableEntity
 {
+    private static final int DEFAULT_POWERUP_CHANCE_PERCENTAGE = 5;
+    
     public static final Color DEFAULT_COLOR = Color.GREEN;
     public static final Color DEFAULT_BORDER_COLOR = Color.BLACK;
     
@@ -39,9 +43,9 @@ public class Brick implements PaintableEntity
     
     protected Color brickColor, borderColor;
     
-    protected int x, y, width, height, points;
+    protected int x, y, width, height, points, powerupChangePercentage;
     
-    protected boolean destroyed, indestructable, visible;
+    protected boolean destroyed, mustBeDestroyed, visible;
     
     public Brick()
     {
@@ -59,6 +63,7 @@ public class Brick implements PaintableEntity
         
         brickColor = DEFAULT_COLOR;
         borderColor = DEFAULT_BORDER_COLOR;
+        powerupChangePercentage = DEFAULT_POWERUP_CHANCE_PERCENTAGE;
     }
     
     @Override
@@ -114,12 +119,24 @@ public class Brick implements PaintableEntity
     
     public Powerup getPowerUp()
     {
-        return null;
+        Point centerPoint = getCenterPoint();
+        
+        Powerup powerup = new Powerup();
+        double powerUpX = (centerPoint.getX() - (powerup.getDiameter() / 2.0));
+        double powerUpY = (centerPoint.getY() - (powerup.getDiameter() / 2.0));
+        
+        powerup.setPowerUpKind(PowerupKind.RANDOM);
+        
+        powerup.setX(powerUpX);
+        powerup.setY(powerUpY);
+
+        return powerup;
     }
     
-    public boolean hasPowerUp()
+    public boolean hasPowerUp(Random random)
     {
-        return false;
+        return isDestroyed() 
+                && random.nextInt(101) <= getPowerupChangePercentage();
     }
     
     public boolean isDestroyed()
@@ -127,15 +144,17 @@ public class Brick implements PaintableEntity
         return destroyed;
     }
     
-    public boolean isIndestructable()
+    public boolean isMustBeDestroyed()
     {
-        return this.indestructable;
+        return this.mustBeDestroyed;
     }
     
-    public void setIndestructable(boolean indestructable)
+    public void setMustBeDestroyed(boolean mustBeDestroyed)
     {
-        this.indestructable = indestructable;
+        this.mustBeDestroyed = mustBeDestroyed;
     }
+    
+    
     
     public void setVisible(boolean visible)
     {
@@ -231,5 +250,19 @@ public class Brick implements PaintableEntity
     public void move(double delta) 
     {
         //This implementation can't move.
+    }
+
+    /**
+     * @return the powerupChangePercentage
+     */
+    public int getPowerupChangePercentage() {
+        return powerupChangePercentage;
+    }
+
+    /**
+     * @param powerupChangePercentage the powerupChangePercentage to set
+     */
+    public void setPowerupChangePercentage(int powerupChangePercentage) {
+        this.powerupChangePercentage = powerupChangePercentage;
     }
 }

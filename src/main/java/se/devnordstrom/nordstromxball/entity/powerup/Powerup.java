@@ -25,12 +25,12 @@ import se.devnordstrom.nordstromxball.entity.PaintableEntity;
 
 /**
  *
- * @author Orville Nordström
+ * @author Orville N
  */
 public class Powerup extends MovableEntity
 {   
     public static final int DEFAULT_WIDTH = 25;
-    public static final int DEFAULT_SPEED = 40;
+    public static final int DEFAULT_SPEED = 200;
     public static final int DEFAULT_POINTS = 500;
     
     //public static final Font DEFAULT_FONT = new Font("Tahoma", Font.BOLD, DEFAULT_WIDTH);
@@ -166,5 +166,26 @@ public class Powerup extends MovableEntity
     public void setPoints(int points) 
     {
         this.points = points;
+    }
+    
+    /**
+     * Returns the string represantation of the powerup.
+     * 
+     * @return 
+     */
+    @Override
+    public String toString()
+    {   
+        String text;
+        if(powerUpKind == PowerupKind.DEFAULT 
+                || powerUpKind == PowerupKind.RANDOM) {
+            text = getPoints() + "+";
+        } else {
+            text = powerUpKind.toString();
+            text = text.replace('_', ' ');
+            text += "("+getPoints()+"+)";
+        }
+        
+        return text;        
     }
 }

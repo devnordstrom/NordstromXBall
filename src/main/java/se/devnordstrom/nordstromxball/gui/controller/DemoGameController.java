@@ -133,35 +133,6 @@ public class DemoGameController extends ScreenController
         
         
         bricks.addAll(demoLevel.getBricks());
-        
-        /*
-        
-        //screenWidth is 700, screenHeight is 500
-        int brickWidth = 50;
-        int brickHeight = 25;
-        
-        for (int y = 0; y < 9; y++) {
-            for (int x = 0; x < 12; x++) {
-                
-                int brickX = brickWidth + (x * brickWidth);
-                int brickY = brickHeight + (y * brickHeight);
-                
-                Brick brick;
-                if(y % 3 == 0) {
-                    brick = new ToughBrick(brickX, brickY, brickWidth, brickHeight);
-                } else {
-                    brick = new Brick(brickX, brickY, brickWidth, brickHeight);
-                    / *
-                        brick.setColor(Color.GREEN);
-                        brick.setBorderColor(Color.BLACK);
-                    * /
-                }            
-                
-                bricks.add(brick);
-            }
-        }
-        
-        */
     }
     
     private void createBall() 
@@ -423,7 +394,7 @@ public class DemoGameController extends ScreenController
                 player.addPoints(brick.hit());
                 
                 
-                if(brick.hasPowerUp()) {
+                if(brick.hasPowerUp(random)) {
                     addPowerUp(brick.getPowerUp());
                 }
                 

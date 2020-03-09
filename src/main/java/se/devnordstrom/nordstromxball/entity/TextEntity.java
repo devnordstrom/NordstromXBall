@@ -22,15 +22,24 @@ import java.awt.Graphics;
 
 /**
  *
- * @author Orville Nordström
+ * @author Orville N
  */
 public class TextEntity implements PaintableEntity
 {
+    private static String DEFAULT_FONT_STYLE = "Tahoma";
+    
+    private static final int DEFAULT_FONT_SIZE = 16;
+    private static final int BOLD_FONT_SIZE = 18;
+    
+    private static final Font DEFAULT_FONT = new Font(DEFAULT_FONT_STYLE, Font.PLAIN, DEFAULT_FONT_SIZE);
+    private static final Font BOLD_FONT = new Font(DEFAULT_FONT_STYLE, Font.BOLD, BOLD_FONT_SIZE);
+    
+    
     private String text;
     
     private Color color;
     
-    private Font font;
+    private Font font = DEFAULT_FONT;
     
     private int x, y;
     
@@ -44,9 +53,9 @@ public class TextEntity implements PaintableEntity
         this.x = x;
         this.y = y;
         this.text = text;
+        this.font = DEFAULT_FONT;
     }
-    
-    
+            
     @Override
     public void paint(Graphics g) 
     {
@@ -61,8 +70,6 @@ public class TextEntity implements PaintableEntity
         
         g.drawString(getText(), getX(), getY());
         
-        
-        
         g.setFont(originalFont);
     }
 
@@ -70,6 +77,11 @@ public class TextEntity implements PaintableEntity
     public void move(double delta) 
     {
         //A text entity isn't normally supposed to move.
+    }
+    
+    public void setBold()
+    {
+        font = BOLD_FONT;
     }
     
     /**

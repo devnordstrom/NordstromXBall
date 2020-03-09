@@ -20,7 +20,7 @@ import java.awt.Graphics;
 
 /**
  *
- * @author Orville Nordström
+ * @author Orville N
  */
 public class TimedTextEntity extends TextEntity 
 {

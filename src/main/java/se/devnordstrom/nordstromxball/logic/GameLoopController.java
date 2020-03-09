@@ -30,7 +30,7 @@ public class GameLoopController implements Runnable
     
     private volatile boolean running, paused;
     
-    private static final long TARGET_FPS = 600;
+    private static final long TARGET_FPS = 60;
     private static final long OPTIMAL_TIME_NANOS = 1000_000_000 / TARGET_FPS;
     
     private volatile EntityController entityController;    
@@ -46,7 +46,7 @@ public class GameLoopController implements Runnable
     
     @Override
     public void run() 
-    {        
+    {   
         while(isRunning()) {
             if(isPaused() || entityController == null) {
                 lastLoopTimeNanos = System.nanoTime();
@@ -56,7 +56,6 @@ public class GameLoopController implements Runnable
             }
             
             totalFrames++;
-   
             
             long currentNanos = System.nanoTime();
             long updateLengthNanos = currentNanos - lastLoopTimeNanos;
@@ -65,18 +64,13 @@ public class GameLoopController implements Runnable
             
             this.entityController.moveEntities(delta);
             
-            //Repaints every 2nd time.
-            if(totalFrames % 2 == 0) {
-                totalRepaints++;
-                repaintRunnable.run();
-            }    
+            
+            totalRepaints++;
+            repaintRunnable.run();
+            
             
             lastLoopTimeNanos = currentNanos;
             
-            /*
-                This value could be negative if it took longer to move the entities than
-                the FPS would allow.
-            */
             long delayTimeNanos = (lastLoopTimeNanos + OPTIMAL_TIME_NANOS) - currentNanos;
             sleep(delayTimeNanos/1000_000);
         }
@@ -89,7 +83,7 @@ public class GameLoopController implements Runnable
         try {
             Thread.sleep(millis);
         } catch(InterruptedException interEx) {
-            //Ignore since this shouldn't happen.
+            //Ignore
         }
     }
     
@@ -125,6 +119,6 @@ public class GameLoopController implements Runnable
     
     public int getFps()
     {
-        return (int) fps;
+        return fps;
     }
 }

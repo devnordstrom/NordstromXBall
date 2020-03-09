@@ -17,19 +17,24 @@
 package se.devnordstrom.nordstromxball.entity.brick;
 
 import java.awt.Color;
+import java.util.Random;
 import se.devnordstrom.nordstromxball.entity.ball.Ball;
 
 /**
  *
- * @author Orville Nordström
+ * @author Orville N
  */
 public class BallBrick extends Brick
 {
+    private static final int RELEASE_BALL_CHANCE_PERCENTAGE = 33;
+    
     public BallBrick()
     {
         super();
         
         brickColor = Color.RED;
+        
+        setPowerupChangePercentage(RELEASE_BALL_CHANCE_PERCENTAGE);
     }
     
     public Ball releaseBall()
@@ -46,12 +51,23 @@ public class BallBrick extends Brick
         extraBall.setX(ballX);
         extraBall.setY(ballY);
         
-        /*
-        int angle = 225;
-        extraBall.setAngle(angle);
-        */
-              
-        
         return extraBall;
+    }
+    
+    /**
+     * This brick will release balls instead of powerups.
+     * 
+     * @param random
+     * @return 
+     */
+    @Override
+    public boolean hasPowerUp(Random random)
+    {
+        return false;
+    }
+    
+    public boolean hasBall(Random random)
+    {
+        return random.nextInt(101) < getPowerupChangePercentage();        
     }
 }

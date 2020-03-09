@@ -60,13 +60,8 @@ public class LevelController
         for(int row = 5; row < bricks.length -3; row++) {
             for(int col = 3; col < bricks[row].length - 3; col++) {
                 Brick brick = null;
-                if(col % 2 == 0 || row % 2 == 0) {
-                    //brick = new InvisibleBrick();                
-                    if(random.nextInt(2) == 1) {
-                        brick = new InvisibleBrick();
-                    } else {
-                        brick = new ToughBrick();
-                    }
+                if(col % 2 == 0 || row % 2 == 0) {                    
+                    brick = new ToughBrick();
                 } else {
                     brick = new Brick();
                 }

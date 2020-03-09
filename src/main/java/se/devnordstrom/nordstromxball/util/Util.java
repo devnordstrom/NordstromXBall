@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Orville Nordström
+ * Copyright (C) 2020 User
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,14 +14,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package se.devnordstrom.nordstromxball.entity.powerup;
+package se.devnordstrom.nordstromxball.util;
+
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.URL;
+import javax.imageio.ImageIO;
 
 /**
  *
- * @author Orville N
+ * @author User
  */
-public enum PowerupKind 
+public class Util 
 {
-    DEFAULT, REVEAL_INVISIBLE, SPLIT_BALLS, DOUBLE_SPEED, 
-    HALF_SPEED, STICKY_PAD, EXTRA_LIFE, BIGGER_PAD, SMALLER_PAD, RANDOM
+    /**
+     * 
+     * @param imageName
+     * @return
+     * @throws IOException 
+     */
+    public static BufferedImage readImageResource(String imageName) throws IOException
+    {
+        String fullName = "img/"+imageName;
+        URL imageUrl = Util.class.getClassLoader().getResource(fullName);
+        BufferedImage image = ImageIO.read(imageUrl);
+        return image;
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Orville Nordström
+ * Copyright (C) 2020 User
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,13 +14,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package se.devnordstrom.nordstromxball.entity.ball;
+package se.devnordstrom.nordstromxball.logic.animation;
+
+import java.util.Collection;
+import se.devnordstrom.nordstromxball.entity.PaintableEntity;
 
 /**
  *
- * @author Orville Nordström
+ * @author Orville N
  */
-public class VolatileBall extends Ball
+public interface Animation 
 {
+    public boolean isActive();
     
+    public boolean isMovementPaused();
+    
+    public double getOpacity();
+    
+    public Collection<PaintableEntity> getEntities();
 }

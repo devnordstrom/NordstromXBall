@@ -20,7 +20,7 @@ import java.awt.Color;
 
 /**
  *
- * @author Orville Nordström
+ * @author Orville N
  */
 public class VitalBall extends Ball
 {

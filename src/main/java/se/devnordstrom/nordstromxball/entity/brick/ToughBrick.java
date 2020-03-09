@@ -24,33 +24,33 @@ import se.devnordstrom.nordstromxball.entity.powerup.PowerupKind;
 
 /**
  *
- * @author Orville Nordström
+ * @author Orville N
  */
 public class ToughBrick extends Brick
-{
-    protected static final Color FULL_HP_COLOR = new Color(0, 200, 0);
-    protected static final Color LOW_HP_COLOR = new Color(0, 150, 0);
+{   
+    private static final int POWERUP_CHANCE_PERCENTAGE = 10;
+    
+    public static final int DEFAULT_START_HP = 2;
+    public static final Color FULL_HP_COLOR = new Color(0, 200, 0);
+    public static final Color LOW_HP_COLOR = new Color(0, 150, 0);
     
     protected int hp;
     
     public ToughBrick()
     {
-        super();
-        
-        this.hp = 2;
-        
-        brickColor = FULL_HP_COLOR;
-        borderColor = DEFAULT_BORDER_COLOR;
+        this(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
     }
     
     public ToughBrick(int x, int y, int width, int height)
     {
         super(x, y, width, height);
-        
-        this.hp = 2;
+                
+        this.hp = DEFAULT_START_HP;
         
         brickColor = FULL_HP_COLOR;
         borderColor = DEFAULT_BORDER_COLOR;
+        
+        this.setPowerupChangePercentage(POWERUP_CHANCE_PERCENTAGE);
     }
   
     @Override
@@ -73,32 +73,14 @@ public class ToughBrick extends Brick
     {
         return hp;
     }
-    
-    
-    @Override
-    public Powerup getPowerUp()
-    {
-        Point centerPoint = getCenterPoint();
-        
-        Powerup powerup = new Powerup();
-        double powerUpX = (centerPoint.getX() - (powerup.getDiameter() / 2.0));
-        double powerUpY = (centerPoint.getY() - (powerup.getDiameter() / 2.0));
-        
-        powerup.setPowerUpKind(PowerupKind.RANDOM);
-        
-        powerup.setX(powerUpX);
-        powerup.setY(powerUpY);
 
-        return powerup;
-    }
-    
     @Override
-    public boolean hasPowerUp()
+    public boolean hasPowerUp(Random random)
     {
         if(hp != 0) {
             return false;
-        }        
+        }
         
-        return System.currentTimeMillis() % 5 == 1;
+        return super.hasPowerUp(random);        
     }
 }

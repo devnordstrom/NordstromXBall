@@ -68,9 +68,7 @@ public class LevelReader
     };
     
     public static Game generateTestGame()
-    {
-        int rows = 18;
-        int columns = 14;
+    {   
         
         char[][] levelLayout = new char[][] {
             {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
@@ -166,11 +164,11 @@ public class LevelReader
         
         Level thirdLevel = readDefaultLevel("experimentalLevel", thirdLevelLayout);
         
-        Level fourthLevel = readDefaultLevel("two pillars", fourthLevelLayut);
+        Level fourthLevel = readDefaultLevel("Two pillars", fourthLevelLayut);
         
         
-        generateRandomLevel("randomLevel");
-        /*
+        //generateRandomLevel("randomLevel");
+        
         
         List<Level> levels = new ArrayList<>();
         levels.add(level);
@@ -178,15 +176,9 @@ public class LevelReader
         levels.add(thirdLevel);
         levels.add(fourthLevel);
         
-        */
         
-        List<Level> levels = new ArrayList<>();
         
-        for(int i = 0; i < 20; i++) {
-           levels.add(generateRandomLevel(String.valueOf(i+1)));
-        }
-        
-        DefaultGame game = new DefaultGame("testGame", "This is the RANDOM testgame.", levels);
+        DefaultGame game = new DefaultGame("testGame", "This is the TEST game.", levels);
         return game;
     }
     
@@ -228,7 +220,7 @@ public class LevelReader
     {
         if(levelLayout == null) throw new NullPointerException();
         
-        if(levelLayout.length > DefaultLevel.BRICK_ROWS) {            
+        if(levelLayout.length > DefaultLevel.BRICK_ROWS) {        
             throw new IndexOutOfBoundsException("levelLayout must not contain "
                     + "more than "+DefaultLevel.BRICK_ROWS+" rows("+levelLayout.length+").");
         }
@@ -241,17 +233,12 @@ public class LevelReader
         
         Brick[][] bricks = new Brick[DefaultLevel.BRICK_ROWS][DefaultLevel.BRICK_COLUMNS];
         
-        
         for(int row = 0; row < levelLayout.length; row++) {
-            
-            
-            
             char[] brickColumns = levelLayout[row];
             
             for(int column = 0; column < brickColumns.length; column++) {
                 bricks[row][column] = readBrick(brickColumns[column]);
             }
-            
         }
         
         DefaultLevel level = new DefaultLevel(bricks);

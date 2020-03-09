@@ -16,24 +16,23 @@
  */
 package se.devnordstrom.nordstromxball.entity.brick;
 
-import java.awt.Color;
-import java.awt.Graphics;
-
 /**
  *
- * @author Orville Nordström
+ * @author Orville N
  */
 public class InvisibleBrick extends ToughBrick
 {    
+    protected int startingHp = 2;
+    
     @Override
-    public boolean isIndestructable()
+    public boolean isMustBeDestroyed()
     {
-        return hp == 2;
+        return hp < startingHp;
     }
     
     @Override
     public boolean isVisible()
     {
-        return hp != 2;
+        return hp < startingHp;
     }
 }

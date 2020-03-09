@@ -22,15 +22,12 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 import se.devnordstrom.nordstromxball.entity.PaintableEntity;
 import se.devnordstrom.nordstromxball.entity.ball.Ball;
 
 /**
  *
- * @author Orville Nordström
+ * @author Orville N
  */
 public class Pad implements PaintableEntity
 {
@@ -85,8 +82,9 @@ public class Pad implements PaintableEntity
      */
     public void move(int x, int y)
     {
-        targetX = x - (width / 2);  //Subtracting half of width so the Pad will be in the middle of targetX
-        targetY = y - (height / 2); //Subtracting half of height so the Pad will be in the middle of targetY
+        //Dividing the width/height in half so the Pad will be centered.
+        targetX = x - (width / 2);
+        targetY = y - (height / 2);
         
         if(lastTargetX == -1) {
             lastTargetX = targetX;
@@ -100,8 +98,6 @@ public class Pad implements PaintableEntity
     /**
      * This method will instantly move the pad to the target x.
      * 
-     * One can implement a pad that will move gradually by overriding this method.
-     * 
      * @param delta 
      */
     @Override
@@ -109,12 +105,11 @@ public class Pad implements PaintableEntity
     {
         int targetX = getTargetX();
         setX(targetX);
-        //This implementation can only move horizontally and instantly so y is ignored.
+        //This implementation can only move horizontally and instantly so targetY is ignored.
         
         moveAttachedBalls();
         
         lastTargetX = targetX;
-        //lastTargetY = targetY;
     }
     
     /**
@@ -260,11 +255,12 @@ public class Pad implements PaintableEntity
     
     public void releaseBalls()
     {        
+        
         for(Ball ball : attachedBalls) {
             ball.setAttached(false);
             ball.launchFromPad(this);
         }
-            
+        
         attachedBalls.clear();
     }
 }

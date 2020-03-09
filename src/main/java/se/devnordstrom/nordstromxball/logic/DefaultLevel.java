@@ -71,6 +71,7 @@ public class DefaultLevel implements Level
      * 
      * @return 
      */
+    @Override
     public Collection<Brick> getBricks()
     {
         Collection<Brick> brickCollection = new ArrayList<>();
@@ -149,16 +150,16 @@ public class DefaultLevel implements Level
     
     public boolean isCleared()
     {
-        return countDestructibleBricks() == 0;
+        return countRemainingBricks() == 0;
     }
     
-    public int countDestructibleBricks()
+    public int countRemainingBricks()
     {
         int desctructibleBricks = 0;
         
         Collection<Brick> bricks = this.getBricks();
         for(Brick brick : bricks) {
-            if(brick != null && !brick.isDestroyed() && !brick.isIndestructable()) {
+            if(brick != null && !brick.isDestroyed() && !brick.isMustBeDestroyed()) {
                 desctructibleBricks++;
             }
         }

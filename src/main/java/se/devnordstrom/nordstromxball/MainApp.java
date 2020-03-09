@@ -1,16 +1,13 @@
 package se.devnordstrom.nordstromxball;
 
 import se.devnordstrom.nordstromxball.gui.MainJFrame;
-import se.devnordstrom.nordstromxball.gui.controller.DemoGameController;
-import se.devnordstrom.nordstromxball.gui.controller.ScreenController;
 import se.devnordstrom.nordstromxball.gui.controller.StandardGameController;
-import se.devnordstrom.nordstromxball.logic.Game;
-import se.devnordstrom.nordstromxball.logic.LevelController;
-import se.devnordstrom.nordstromxball.logic.level.LevelReader;
+import se.devnordstrom.nordstromxball.logic.level.CampainGame;
+import se.devnordstrom.nordstromxball.logic.sound.AudioController;
 
 /**
- *
- * @author User
+ * 
+ * @author Orville N
  */
 public class MainApp 
 {
@@ -18,27 +15,17 @@ public class MainApp
     
     public static void main(String[] args)
     {
-        startTestGame();
+        startCampaignMode();
     }
     
-    private static void startSampleGame()
+    private static void startCampaignMode()
     {
-        //LevelController
-        Game game = LevelController.getSampleGame();
-        StandardGameController gameController = new StandardGameController(game, MainJFrame.DEFAULT_WIDTH, MainJFrame.DEFAULT_HEIGHT);
+        //Loads the sound
+        AudioController.loadSound();
         
-       //Creates the GUI and injects the controller.
-        MainJFrame mainGui = new MainJFrame(APP_TITLE);
-        mainGui.setScreenController(gameController);
-        mainGui.startGUI();
-    }
-    
-    private static void startTestGame()
-    {
-        Game testGame = LevelReader.generateTestGame();
-        StandardGameController gameController = new StandardGameController(testGame, MainJFrame.DEFAULT_WIDTH, MainJFrame.DEFAULT_HEIGHT);
+        StandardGameController gameController = new StandardGameController(CampainGame.loadGame());
         
-       //Creates the GUI and injects the controller.
+        //Creates the GUI and injects the controller.
         MainJFrame mainGui = new MainJFrame(APP_TITLE);
         mainGui.setScreenController(gameController);
         mainGui.startGUI();

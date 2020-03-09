@@ -21,12 +21,14 @@ import java.awt.Graphics;
 
 /**
  *
- * @author Orville Nordström
+ * @author Orville N
  */
 public class WallBrick extends Brick
 {
+    public static final Color DEFAULT_COLOR = Color.BLACK;
+    
     public WallBrick(int x, int y, int width, int height)
-    {        
+    {    
         this.setX(x);
         this.setY(y);
         this.setWidth(width);
@@ -34,17 +36,16 @@ public class WallBrick extends Brick
         
         this.points = 0;        
         
+        this.setMustBeDestroyed(false);
         
-        brickColor = Color.BLACK;
+        brickColor = DEFAULT_COLOR;
     }
     
     @Override
     public void paint(Graphics g)
     {
         g.setColor(brickColor);
-        g.fillRect(getX(), getY(), getWidth(), getHeight());
-        
-        //Not painting a border for the WallBrick
+        g.fillRect(getX(), getY(), getWidth(), getHeight());        
     }
     
     @Override

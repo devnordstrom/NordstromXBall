@@ -16,14 +16,21 @@
  */
 package se.devnordstrom.nordstromxball.gui;
 
+import java.awt.AlphaComposite;
+import java.awt.Cursor;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelListener;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collection;
+import javax.swing.SwingUtilities;
 import se.devnordstrom.nordstromxball.gui.controller.ScreenController;
 import se.devnordstrom.nordstromxball.entity.PaintableEntity;
 import se.devnordstrom.nordstromxball.logic.GameLoopController;
@@ -59,10 +66,15 @@ public class MainJFrame extends javax.swing.JFrame
             return;
         }
         
-        Collection<PaintableEntity> paintables = new ArrayList<>(screenController.getEntities());
-        for(PaintableEntity entity : paintables) {
+        for(PaintableEntity entity : screenController.getEntities()) {
             if(entity != null) entity.paint(g);
         }
+    }
+    
+    private void setOpacity(Graphics g, float opacity)
+    {
+        ((Graphics2D) g).setComposite(AlphaComposite
+                .getInstance(AlphaComposite.SRC_OVER, opacity));  
     }
     
     public void setScreenController(ScreenController screenController) 
@@ -80,19 +92,19 @@ public class MainJFrame extends javax.swing.JFrame
 
     private void removeEventListeners() 
     {
-        for (MouseListener mouseListener : getMouseListeners()) {
+        for(MouseListener mouseListener : getMouseListeners()) {
             removeMouseListener(mouseListener);
         }
 
-        for (MouseMotionListener mouseMotionListener : getMouseMotionListeners()) {
+        for(MouseMotionListener mouseMotionListener : getMouseMotionListeners()) {
             removeMouseMotionListener(mouseMotionListener);
         }
 
-        for (MouseWheelListener mouseWheelListener : getMouseWheelListeners()) {
+        for(MouseWheelListener mouseWheelListener : getMouseWheelListeners()) {
             removeMouseWheelListener(mouseWheelListener);
         }
 
-        for (KeyListener keyListener : getKeyListeners()) {
+        for(KeyListener keyListener : getKeyListeners()) {
             removeKeyListener(keyListener);
         }
     }
@@ -123,6 +135,15 @@ public class MainJFrame extends javax.swing.JFrame
         this.setVisible(true);
         
         gameScreenJPanel.requestFocus();
+    }
+    
+    private void setHiddenCursor()
+    {   
+        Cursor hiddenCursor = Toolkit.getDefaultToolkit()
+                .createCustomCursor(new BufferedImage( 1, 1, BufferedImage.TYPE_INT_ARGB ),
+                    new Point(), null);
+        
+        gameScreenJPanel.setCursor(hiddenCursor);
     }
     
     /**
@@ -165,6 +186,8 @@ public class MainJFrame extends javax.swing.JFrame
         setResizable(false);
 
         gameScreenJPanel.setBackground(new java.awt.Color(0, 0, 0));
+        gameScreenJPanel.setCursor(new java.awt.Cursor(java.awt.Cursor.NW_RESIZE_CURSOR));
+        setHiddenCursor();
 
         javax.swing.GroupLayout gameScreenJPanelLayout = new javax.swing.GroupLayout(gameScreenJPanel);
         gameScreenJPanel.setLayout(gameScreenJPanelLayout);
