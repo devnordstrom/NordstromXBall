@@ -45,7 +45,7 @@ public class Brick implements PaintableEntity
     
     protected int x, y, width, height, points, powerupChangePercentage;
     
-    protected boolean destroyed, mustBeDestroyed, visible;
+    protected boolean destroyed, mustBeDestroyed, indestructable, visible;
     
     public Brick()
     {
@@ -264,5 +264,21 @@ public class Brick implements PaintableEntity
      */
     public void setPowerupChangePercentage(int powerupChangePercentage) {
         this.powerupChangePercentage = powerupChangePercentage;
+    }
+    
+    /**
+     * @return the indestructable
+     */
+    public boolean isIndestructable() 
+    {
+        return indestructable;
+    }
+
+    /**
+     * @param indestructable the indestructable to set
+     */
+    public void setIndestructable(boolean indestructable) 
+    {
+        this.indestructable = indestructable;
     }
 }

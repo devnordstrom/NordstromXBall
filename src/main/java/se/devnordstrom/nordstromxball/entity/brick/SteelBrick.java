@@ -14,26 +14,40 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package se.devnordstrom.nordstromxball.logic;
+package se.devnordstrom.nordstromxball.entity.brick;
 
-import java.util.Collection;
-import se.devnordstrom.nordstromxball.entity.brick.Brick;
+import java.awt.Color;
+import java.awt.Graphics;
 
 /**
  *
- * @author Orville Nordström
+ * @author Orville N
  */
-public interface Level 
+public class SteelBrick extends Brick
 {
-    public boolean isBonusLevel();
+    public static final Color DEFAULT_COLOR = Color.GRAY;
     
-    public Collection<Brick> getBricks();
+    public SteelBrick()
+    {   
+        super();
+        
+        this.points = 0;        
+        
+        this.setIndestructable(true);
+        this.setMustBeDestroyed(false);
+        
+        brickColor = DEFAULT_COLOR;
+    }
     
-    public int getLevelNumber();
+    @Override
+    public int getPoints()
+    {
+        return 0;
+    }
     
-    public void setLevelNumber(int levelNumber);
-            
-    public String getLevelName();
-    
-    public boolean isCleared();
+    @Override
+    public int hit()
+    {
+        return 0;
+    }
 }

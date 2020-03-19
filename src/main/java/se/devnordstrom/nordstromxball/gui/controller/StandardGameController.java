@@ -27,59 +27,56 @@ import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 import javax.swing.SwingUtilities;
 import se.devnordstrom.nordstromxball.entity.EntityController;
 import se.devnordstrom.nordstromxball.entity.PaintableEntity;
 import se.devnordstrom.nordstromxball.entity.TextEntity;
-import se.devnordstrom.nordstromxball.entity.TimedTextEntity;
 import se.devnordstrom.nordstromxball.entity.ball.Ball;
-import se.devnordstrom.nordstromxball.entity.ball.VitalBall;
-import se.devnordstrom.nordstromxball.entity.brick.BallBrick;
+import se.devnordstrom.nordstromxball.entity.ball.StickyBall;
 import se.devnordstrom.nordstromxball.entity.brick.Brick;
-import se.devnordstrom.nordstromxball.entity.brick.ToughBrick;
-import se.devnordstrom.nordstromxball.entity.brick.WallBrick;
 import se.devnordstrom.nordstromxball.entity.pad.Pad;
+import se.devnordstrom.nordstromxball.entity.powerup.Explosion;
 import se.devnordstrom.nordstromxball.entity.powerup.Powerup;
 import se.devnordstrom.nordstromxball.entity.powerup.PowerupKind;
 import se.devnordstrom.nordstromxball.gui.MainJFrame;
 import se.devnordstrom.nordstromxball.logic.Game;
-import se.devnordstrom.nordstromxball.logic.DefaultLevel;
-import se.devnordstrom.nordstromxball.logic.Level;
+import se.devnordstrom.nordstromxball.logic.level.Level;
 import se.devnordstrom.nordstromxball.logic.Player;
 import se.devnordstrom.nordstromxball.logic.animation.Animation;
 import se.devnordstrom.nordstromxball.logic.animation.StandardAnimation;
 import se.devnordstrom.nordstromxball.logic.sound.AudioController;
 
 /**
- *
+ * The main controller used for gameplay in NordstromXBall.
+ * 
  * @author Orville Nordström
  */
 public class StandardGameController extends ScreenController implements EntityController
 {   
     private static final boolean ENABLE_MOUSE_BALL_SPAWNING = false;
     
+    private static final boolean DISABLE_CURSOR = true;
+    
     private static final int DEFAULT_SCREEN_MARGIN = 30;
     
     private boolean gameOver, resetLevel, setNextLevel, playerWaitingToServe;
-    
-    private double totalDeltaForSecond;
-    
-    private volatile double highestDelta = 0.1;
-    
-    private volatile double combinedDeltas;
-    
+        
+    private volatile double totalDeltaForSecond, combinedDeltas,
+            highestDelta = 0.1;
+        
     private volatile int fps, moves, movesForSecond;
     
     private final int screenWidth, screenHeight;
 
     private final Rectangle screenArea;
     
-    private final Collection<Pad> pads;
-        
-    private final Collection<Ball> balls, newBalls, ballsToRemove;
-    
-    private final Collection<Powerup> powerups, newPowerups;
+    private final List<Pad> pads;
+    private final List<Ball> balls, newBalls, ballsToRemove;
+    private final List<Powerup> powerups, newPowerups, powerupsToRemove;
+    private final List<Animation> currentAnimations;
+    private final List<Explosion> explosions, newExplosions;
     
     private final Game game;
     
@@ -89,8 +86,6 @@ public class StandardGameController extends ScreenController implements EntityCo
     
     private Level currentLevel;
         
-    private Collection<Animation> currentAnimations = new ArrayList<>();
-    
     public StandardGameController(Game game) 
     {
         this.game = game;
@@ -98,16 +93,23 @@ public class StandardGameController extends ScreenController implements EntityCo
         this.screenHeight = MainJFrame.DEFAULT_HEIGHT;        
         this.screenArea = new Rectangle(0, 0, screenWidth, screenHeight);
         
+        //Init fields.
         pads = new ArrayList<>();
         balls = new ArrayList<>();
         newBalls = new ArrayList<>();
         ballsToRemove = new ArrayList<>();
         powerups = new ArrayList<>(); 
         newPowerups = new ArrayList<>();
+        powerupsToRemove = new ArrayList<>();
+        currentAnimations = new ArrayList<>();
+        explosions = new ArrayList<>();
+        newExplosions = new ArrayList<>();
+        
         random = new Random();
         player = new Player();
-            
+        
         initPlayerPad();
+        
         setNextLevel();
     }
     
@@ -120,7 +122,12 @@ public class StandardGameController extends ScreenController implements EntityCo
         
         pads.add(playerPad);
     }
-            
+    
+    /**
+     * 
+     * 
+     * @param level 
+     */
     private void setLevel(Level level)
     {   
         currentLevel = level;
@@ -133,7 +140,9 @@ public class StandardGameController extends ScreenController implements EntityCo
         clearBalls();
         
         clearPowerups();
-                    
+               
+        clearExplosions();
+        
         resetPads();
     }
     
@@ -142,7 +151,7 @@ public class StandardGameController extends ScreenController implements EntityCo
         movePlayerPads(0, 0);
         movePlayerPads(screenWidth/2, 0);
         
-        for(Pad pad : this.getPads()) {    
+        for(Pad pad : this.getPads()) {
             if(pad != null) pad.reset();
         }
         
@@ -225,9 +234,15 @@ public class StandardGameController extends ScreenController implements EntityCo
     }
     
     @Override
-    public Collection<PaintableEntity> getEntities() 
+    public boolean disableCursor()
+    {
+        return DISABLE_CURSOR;
+    }
+    
+    @Override
+    public List<PaintableEntity> getEntities() 
     {       
-        Collection<PaintableEntity> paintableEntities = new ArrayList<>();
+        List<PaintableEntity> paintableEntities = new ArrayList<>();
         
         if(isGameOver()) {
             paintableEntities.addAll(getGameOverEntities());
@@ -246,6 +261,7 @@ public class StandardGameController extends ScreenController implements EntityCo
         paintableEntities.addAll(getBricks());
         paintableEntities.addAll(balls);
         paintableEntities.addAll(getPowerUps());
+        paintableEntities.addAll(getExplosions());
         paintableEntities.addAll(getTextEntities());
         
         if(isPlayerWaitingToServe()) {
@@ -298,7 +314,15 @@ public class StandardGameController extends ScreenController implements EntityCo
     {
         newBalls.add(ball);
     }
+    
+    private void addExplosion(Explosion explosion)
+    {
+        System.out.println("addExplosion('"+ explosion.getX() +"', '"+explosion.getY()+"') started!");
         
+        explosion.start();
+        newExplosions.add(explosion);
+    }
+    
     private void killPlayer()
     {
         player.takeLife();
@@ -402,7 +426,22 @@ public class StandardGameController extends ScreenController implements EntityCo
         newPowerups.clear();
     }
     
-    @Deprecated //Not thread safe.
+    private void clearExplosions()
+    {
+        explosions.clear();
+        newExplosions.clear();
+    }
+    
+    private List<Explosion> getExplosions()
+    {
+        if(!newExplosions.isEmpty()) {
+            explosions.addAll(newExplosions);
+            newExplosions.clear();
+        }
+        
+        return explosions;
+    }
+    
     private Collection<Ball> getBalls() 
     {      
         if(!newBalls.isEmpty()) {
@@ -430,19 +469,63 @@ public class StandardGameController extends ScreenController implements EntityCo
             newPowerups.clear();
         }
         
-        return powerups;
-    }
-            
-    private void addPowerup(Powerup powerup)
-    {         
-        if(powerup.getPowerUpKind() == PowerupKind.RANDOM) {
-            PowerupKind[] powerUpKinds = PowerupKind.values();
-            int kindIndex = random.nextInt(powerUpKinds.length);
-            
-            powerup.setPowerUpKind(powerUpKinds[kindIndex]);
+        if(!powerupsToRemove.isEmpty()) {
+            powerupsToRemove.addAll(powerupsToRemove);
+            powerupsToRemove.clear();
         }
         
-        newPowerups.add(powerup);
+        return powerups;
+    }
+          
+    private void addPowerup(Powerup powerup)
+    {   
+        System.out.println("addPowerup('"+powerup+"') started!");
+        
+        switch(powerup.getPowerUpKind()) {
+            case EXTRA_BALL:
+                
+                Ball extraBall = new Ball();
+                
+                extraBall.setColor(Color.RED);
+                extraBall.setX(powerup.getX());
+                extraBall.setY(powerup.getY());
+                
+                addBall(extraBall);
+                break;
+                
+            case EXTRA_STICKY_BALL:
+                
+                StickyBall stickyBall = new StickyBall();
+                stickyBall.setX(powerup.getX());
+                stickyBall.setY(powerup.getY());
+                
+                addBall(stickyBall);
+                break;
+                
+            case EXPLOSION:
+                
+                Explosion explosion = new Explosion();
+                
+                explosion.setX(powerup.getX());
+                explosion.setY(powerup.getY());
+
+                addExplosion(explosion);
+                break;
+                
+            case RANDOM:
+                //Assigns a randomized powerupkind.
+                PowerupKind[] powerUpKinds = PowerupKind.values();
+                int kindIndex = random.nextInt(powerUpKinds.length);
+
+                powerup.setPowerUpKind(powerUpKinds[kindIndex]);
+                
+                /*
+                    The break has intentionally been excluded here
+                    so the default code will run and add the powerup.
+                */
+            default:
+                newPowerups.add(powerup);
+        }
     }
     
     private void addPowerupAnimation(Powerup powerup)
@@ -489,13 +572,23 @@ public class StandardGameController extends ScreenController implements EntityCo
             case SMALLER_PAD:
                 setPadWidthMod(0.7);
                 break;
+            case KILL_PLAYER:
+                killPlayer();
+                break;
             default:
                 break;            
         }
-
-        addPowerupAnimation(powerup);
+        
+        if(powerup.getPowerUpKind() != PowerupKind.KILL_PLAYER) {
+            addPowerupAnimation(powerup);
+        }
     }
-       
+   
+    private void removePowerup(Powerup powerup)
+    {
+        powerupsToRemove.add(powerup);
+    }
+    
     /**
      * Hits all invisible bricks and returns the number of
      * bricks that have been hit.
@@ -613,9 +706,9 @@ public class StandardGameController extends ScreenController implements EntityCo
         
         String infoText;
         if(currentLevel == null) {
-            infoText = "currentLevel is not set.";
+            infoText = "The level has not been set.";
         } else {
-            infoText = "#"+currentLevel.getLevelNumber()+" "+currentLevel.getLevelName();
+            infoText = "Level: "+currentLevel.getLevelNumber()+", "+currentLevel.getLevelName();
         }
         
         TextEntity levelInfoText = new TextEntity();
@@ -624,8 +717,6 @@ public class StandardGameController extends ScreenController implements EntityCo
         levelInfoText.setX(DEFAULT_SCREEN_MARGIN);
         levelInfoText.setY(DEFAULT_SCREEN_MARGIN * 3);
         textEntities.add(levelInfoText);
-
-        
         
         return textEntities;
     }
@@ -711,11 +802,11 @@ public class StandardGameController extends ScreenController implements EntityCo
         combinedDeltas += delta;
         totalDeltaForSecond += delta;
         
-        if (totalDeltaForSecond >= 1.0) {
+        if(totalDeltaForSecond >= 1.0) {
             fps = (int) Math.round(((double) movesForSecond) / totalDeltaForSecond);
         }
         
-        if (delta > highestDelta) {
+        if(delta > highestDelta) {
             highestDelta = delta;
         }
         
@@ -786,6 +877,20 @@ public class StandardGameController extends ScreenController implements EntityCo
             }
         }
         
+        List<Explosion> explosions = getExplosions();
+        Iterator<Explosion> iterator = explosions.iterator();
+        while(iterator.hasNext()) {
+            Explosion explosion = iterator.next();
+            
+            if(explosion == null || !explosion.isActive()) {
+                iterator.remove();
+                continue;
+            }
+            
+            checkExplosion(explosion);
+        }
+        
+        
         if(isLevelCleared()) {
             setNextLevel = true;
             
@@ -825,31 +930,50 @@ public class StandardGameController extends ScreenController implements EntityCo
         //Check collissions for all bricks.
         for (Brick brick : getBricks()) {
             if (ball.collidesWith(brick)) {
-                player.addPoints(brick.hit());
-                
                 AudioController.playBounceSound();
                 
-                if(brick.hasPowerUp(random)) {
-                    addPowerup(brick.getPowerUp());
-                }
-                
-                if(brick.isDestroyed() && brick instanceof BallBrick) {
-                    BallBrick ballBrick = (BallBrick) brick;
-                    
-                    /*
-                        This should be refactored so that the brick will
-                        release this as a powerup.
-                    */
-                    if(ballBrick.hasBall(random)) { 
-                        Ball extraBall = ballBrick.releaseBall();
-                        addBall(extraBall);
-                    }
-                }
+                hitBrick(brick);
             }
         }
                 
         for (Pad pad : pads) {
             ball.collidesWith(pad);
+        }
+    }
+    
+    private void hitBrick(Brick brick)
+    {
+        if(brick == null || brick.isDestroyed()) {
+            return;
+        }
+
+        player.addPoints(brick.hit());
+                
+        if(brick.hasPowerUp(random)) {
+            addPowerup(brick.getPowerUp());
+        }
+    }
+    
+    private void checkExplosion(Explosion explosion)
+    {
+        if(null == explosion || !explosion.isActive()) {
+            return;
+        }
+        
+        Rectangle explosionHitbox = explosion.getHitbox();
+        
+        Collection<Brick> bricks = getBricks();
+        
+        for(Brick brick : bricks) {
+            if(brick == null
+                    || brick.isDestroyed()
+                    || !explosionHitbox.intersects(brick.getHitBox())) {
+                continue;
+            }
+            
+            hitBrick(brick);
+           
+            AudioController.playBrickExplosionSound();
         }
     }
     

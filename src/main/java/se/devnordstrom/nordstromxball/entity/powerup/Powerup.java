@@ -63,6 +63,29 @@ public class Powerup extends MovableEntity
     @Override
     public void paint(Graphics g) 
     {        
+        Color fillColor = getPowerupFillColor();
+        Color powerUpColor = getPowerupColor();
+        
+        g.setColor(powerUpColor);
+        g.fillRect(getX(), getY(), diameter, diameter);
+        
+        
+        g.setColor(fillColor);
+        g.fillRect(getX()+5, getY()+5, diameter-10, diameter-10);        
+    }
+    
+    private Color getPowerupFillColor()
+    {
+        return Color.BLACK;
+    }
+    
+    private Color getPowerupColor()
+    {
+        if(isPossitive() 
+                && (System.currentTimeMillis() % 200) <= 100) {
+            return Color.WHITE;
+        }
+        
         Color powerUpColor;
         switch(getPowerUpKind()) {
             case REVEAL_INVISIBLE:
@@ -89,29 +112,34 @@ public class Powerup extends MovableEntity
             case SMALLER_PAD:
                 powerUpColor = new Color(204, 204, 0);
                 break;
+            case KILL_PLAYER:
+                int red = 56, green = 128, blue = 4;
+                
+                if(System.currentTimeMillis() % 200 < 100) {
+                    green = 148;
+                }
+                
+                powerUpColor = new Color(red, green, blue);
+                break;
             case DEFAULT:
             default:
                 powerUpColor = Color.RED;
         }
         
-        
-        
-        Color color = Color.WHITE;
-        if((System.currentTimeMillis() % 200) <= 100) {
-            color = powerUpColor;
+        return powerUpColor;
+    }
+    
+    private boolean isPossitive()
+    {
+        switch(getPowerUpKind()) {
+            case KILL_PLAYER:
+            case SMALLER_PAD:
+            case DOUBLE_SPEED:
+                return false;
+                
+            default:
+                return true;
         }
-        
-        g.setColor(color);
-        g.fillRect(getX(), getY(), diameter, diameter);
-        
-        
-        g.setColor(Color.BLACK);
-        g.fillRect(getX()+5, getY()+5, diameter-10, diameter-10);
-        
-        
-        
-        
-        
     }
     
     public Rectangle getHitbox()

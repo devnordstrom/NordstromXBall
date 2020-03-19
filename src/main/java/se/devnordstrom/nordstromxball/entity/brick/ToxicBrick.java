@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Orville Nordström
+ * Copyright (C) 2020 Orville N
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,46 +17,42 @@
 package se.devnordstrom.nordstromxball.entity.brick;
 
 import java.awt.Color;
-import java.awt.Graphics;
+import se.devnordstrom.nordstromxball.entity.powerup.Powerup;
+import se.devnordstrom.nordstromxball.entity.powerup.PowerupKind;
 
 /**
  *
  * @author Orville N
  */
-public class WallBrick extends Brick
+public class ToxicBrick extends Brick
 {
-    public static final Color DEFAULT_COLOR = Color.BLACK;
+    private static final int RELEASE_TOXIC_POWERUP_PERCENTAGE = 100;
     
-    public WallBrick(int x, int y, int width, int height)
-    {    
-        this.setX(x);
-        this.setY(y);
-        this.setWidth(width);
-        this.setHeight(height);
-        
-        this.points = 0;        
-        
-        this.setMustBeDestroyed(false);
-        
-        brickColor = DEFAULT_COLOR;
+    public ToxicBrick()
+    {
+        super();
+                
+        setPowerupChangePercentage(RELEASE_TOXIC_POWERUP_PERCENTAGE);
     }
     
     @Override
-    public void paint(Graphics g)
+    public Color getColor()
     {
-        g.setColor(brickColor);
-        g.fillRect(getX(), getY(), getWidth(), getHeight());        
+        int red = 56, green = 128, blue = 4;
+
+        if(System.currentTimeMillis() % 200 < 100) {
+            green = 148;
+        }
+
+        return new Color(red, green, blue);
+        //This will return a "breathing" green color between 100-150
     }
     
     @Override
-    public int getPoints()
+    public Powerup getPowerUp()
     {
-        return 0;
-    }
-    
-    @Override
-    public int hit()
-    {
-        return 0;
+        Powerup powerup = super.getPowerUp();        
+        powerup.setPowerUpKind(PowerupKind.KILL_PLAYER);
+        return powerup;
     }
 }

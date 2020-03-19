@@ -14,30 +14,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package se.devnordstrom.nordstromxball.util;
+package se.devnordstrom.nordstromxball.entity.ball;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.net.URL;
-import javax.imageio.ImageIO;
+import java.awt.Color;
 
 /**
  *
  * @author User
  */
-public class Util 
+public class StickyBall extends Ball 
 {
-    /**
-     * 
-     * @param imageName
-     * @return
-     * @throws IOException 
-     */
-    public static BufferedImage readImageResource(String imageName) throws IOException
+    private static Color STICKY_BALL_DEFAULT_COLOR = Color.YELLOW;
+    
+    public StickyBall()
     {
-        String fullName = "img/"+imageName;
-        URL imageUrl = Util.class.getClassLoader().getResource(fullName);
-        BufferedImage image = ImageIO.read(imageUrl);
-        return image;
+        super();
+        
+        this.setColor(STICKY_BALL_DEFAULT_COLOR);
+        
+        this.setSticky(true);
     }
 }

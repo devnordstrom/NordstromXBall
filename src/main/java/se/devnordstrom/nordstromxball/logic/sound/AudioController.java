@@ -29,7 +29,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
  */
 public class AudioController 
 {    
-    private static boolean playSounds = true;
+    private static boolean playSounds = false;
     
     private static final String[] BOUNCE_SOUND_NAMES = new String[]{"bounce_1.wav", 
             "bounce_2.wav", "bounce_3.wav"};
@@ -51,6 +51,11 @@ public class AudioController
         String bounceSound = BOUNCE_SOUND_NAMES[index];
                         
         playSound(bounceSound);
+    }
+    
+    public static void playBrickExplosionSound()
+    {
+        //Do nothing as of now.
     }
     
     public static void playSound(String soundName)

@@ -21,6 +21,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelListener;
 import java.util.Collection;
+import java.util.List;
 import se.devnordstrom.nordstromxball.entity.PaintableEntity;
 import se.devnordstrom.nordstromxball.entity.EntityController;
 
@@ -30,7 +31,8 @@ import se.devnordstrom.nordstromxball.entity.EntityController;
  */
 public abstract class ScreenController implements EntityController
 {
-    public abstract Collection<PaintableEntity> getEntities();
+    @Override
+    public abstract List<PaintableEntity> getEntities();
     
     /**
      * Used if there are entities to move such as sprites.
@@ -71,6 +73,11 @@ public abstract class ScreenController implements EntityController
     public MouseWheelListener getMouseWheelListener()
     {
         return null;
+    }
+    
+    public boolean disableCursor()
+    {
+        return false;
     }
     
     /**

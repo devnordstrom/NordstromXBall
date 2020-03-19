@@ -90,7 +90,7 @@ public abstract class MovableEntity implements PaintableEntity
     {
         this.ySpeed = ySpeed;
     }
-    
+    /*
     public boolean isMovingToTheRight() 
     {
         return getxSpeed() > 0;
@@ -110,4 +110,6 @@ public abstract class MovableEntity implements PaintableEntity
     {
         return getySpeed() < 0;
     }
+    */
+    
 }

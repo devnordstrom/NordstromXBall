@@ -22,12 +22,14 @@ import java.util.List;
 import java.util.Random;
 import se.devnordstrom.nordstromxball.entity.brick.BallBrick;
 import se.devnordstrom.nordstromxball.entity.brick.Brick;
+import se.devnordstrom.nordstromxball.entity.brick.ExplosiveBrick;
 import se.devnordstrom.nordstromxball.entity.brick.InvisibleBrick;
+import se.devnordstrom.nordstromxball.entity.brick.SteelBrick;
+import se.devnordstrom.nordstromxball.entity.brick.StickyBallBrick;
 import se.devnordstrom.nordstromxball.entity.brick.ToughBrick;
+import se.devnordstrom.nordstromxball.entity.brick.ToxicBrick;
 import se.devnordstrom.nordstromxball.logic.DefaultGame;
-import se.devnordstrom.nordstromxball.logic.DefaultLevel;
 import se.devnordstrom.nordstromxball.logic.Game;
-import se.devnordstrom.nordstromxball.logic.Level;
 
 /**
  *
@@ -43,8 +45,6 @@ public class LevelReader
     
     public static final char[] BRICK_CODES = new char[]{EMPTY, DEFAULT_BRICK, 
         BALL_BRICK, TOUGH_BRICK, INVISIBLE_BRICK};
-    
-    
     
     private static final char[][] EMPTY_LEVEL = {
             {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
@@ -66,121 +66,6 @@ public class LevelReader
             {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
             {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}
     };
-    
-    public static Game generateTestGame()
-    {   
-        
-        char[][] levelLayout = new char[][] {
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', ' ', ' ', ' '},
-            {' ', ' ', ' ', 'd', ' ', ' ', ' ', ' ', ' ', ' ', 'd', ' ', ' ', ' '},
-            {' ', ' ', ' ', 'd', ' ', 'b', 'b', 'b', 'b', ' ', 'd', ' ', ' ', ' '},
-            {' ', ' ', ' ', 'd', ' ', 'b', 'b', 'b', 'b', ' ', 'd', ' ', ' ', ' '},
-            {' ', ' ', ' ', 'd', ' ', 'b', 'b', 'b', 'b', ' ', 'd', ' ', ' ', ' '},
-            {' ', ' ', ' ', 'd', ' ', 'b', 'b', 'b', 'b', ' ', 'd', ' ', ' ', ' '},
-            {' ', ' ', ' ', 'd', ' ', ' ', ' ', ' ', ' ', ' ', 'd', ' ', ' ', ' '},
-            {' ', ' ', ' ', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', ' ', ' ', ' '},
-            {' ', ' ', ' ', 't', 't', 't', 't', 't', 't', 't', 't', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}
-        };
-        
-        
-        char[][] secondLevelLayout = new char[][] {
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', 'i', 'i', 'i', 'i', 'i', 'i', 'i', 'i', 'i', 'i', ' ', ' '},
-            {' ', ' ', 'i', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'i', ' ', ' '},
-            {' ', ' ', 'i', 'd', ' ', ' ', ' ', ' ', ' ', ' ', 'd', 'i', ' ', ' '},
-            {' ', ' ', 'i', 'd', ' ', 't', 't', 't', 't', ' ', 'd', 'i', ' ', ' '},
-            {' ', ' ', 'i', 'd', ' ', 't', 'b', 'b', 't', ' ', 'd', 'i', ' ', ' '},
-            {' ', ' ', 'i', 'd', ' ', 't', 'b', 'b', 't', ' ', 'd', 'i', ' ', ' '},
-            {' ', ' ', 'i', 'd', ' ', 't', 't', 't', 't', ' ', 'd', 'i', ' ', ' '},
-            {' ', ' ', 'i', 'd', ' ', ' ', ' ', ' ', ' ', ' ', 'd', 'i', ' ', ' '},
-            {' ', ' ', 'i', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'i', ' ', ' '},
-            {' ', ' ', 'i', 't', 't', 't', 't', 't', 't', 't', 't', 'i', ' ', ' '},
-            {' ', ' ', 'i', 'i', 'i', 'i', 'i', 'i', 'i', 'i', 'i', 'i', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}
-        };
-        
-        
-        char[][] thirdLevelLayout = new char[][] {
-            {' ', ' ', 'd', ' ', ' ', ' ', 'b', 'b', 'b', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', 'd', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', 'd', 'd', 'd', 'd', 'd', 'd', ' ', 'd', 'd', 'd', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', 'd', ' ', 'd', 'd', 'd', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', 'd', ' ', 'd', 'd', 'd', ' ', ' '},
-            {' ', ' ', 'd', 'd', 'd', ' ', ' ', 'd', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', 'd', 'd', 'd', ' ', ' ', 'd', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', 'd', 'd', 'd', ' ', ' ', 'd', 'd', 'd', 'd', 'd', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'd', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'd', ' ', ' '},
-            {'t', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't'},
-            {'t', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't'},
-            {'i', 'i', 'i', 'i', 'i', 'i', 'i', 'i', 'i', 'i', 'i', 'i', 'i', 'i'},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}
-        };
-        
-        
-        char[][] fourthLevelLayut = new char[][]{
-            {' ', 'd', 'd', 't', 'b', ' ', ' ', ' ', ' ', 'b', 't', 'd', 'd', ' '},
-            {' ', 'd', 'd', 't', 'b', ' ', ' ', ' ', ' ', 'b', 't', 'd', 'd', ' '},
-            {' ', 'd', 'd', 't', 'b', ' ', ' ', ' ', ' ', 'b', 't', 'd', 'd', ' '},
-            {' ', 'd', 'd', 't', 't', ' ', ' ', ' ', ' ', 't', 't', 'd', 'd', ' '},
-            {' ', 'd', 'd', 't', 't', ' ', ' ', ' ', ' ', 't', 't', 'd', 'd', ' '},
-            {' ', 'd', 'd', 't', 't', ' ', ' ', ' ', ' ', 't', 't', 'd', 'd', ' '},
-            {' ', 'd', 'd', 't', 't', ' ', ' ', ' ', ' ', 't', 't', 'd', 'd', ' '},
-            {' ', 'd', 'd', 't', 't', ' ', ' ', ' ', ' ', 't', 't', 'd', 'd', ' '},
-            {' ', 'd', 'd', 't', 't', ' ', ' ', ' ', ' ', 't', 't', 'd', 'd', ' '},
-            {' ', 'd', 'd', 't', 't', ' ', ' ', ' ', ' ', 't', 't', 'd', 'd', ' '},
-            {' ', 'd', 'd', 't', 't', ' ', ' ', ' ', ' ', 't', 't', 'd', 'd', ' '},
-            {' ', 'd', 'd', 't', 't', ' ', ' ', ' ', ' ', 't', 't', 'd', 'd', ' '},
-            {' ', 'd', 'd', 't', 't', ' ', ' ', ' ', ' ', 't', 't', 'd', 'd', ' '},
-            {' ', 'd', 'd', 't', 't', ' ', ' ', ' ', ' ', 't', 't', 'd', 'd', ' '},
-            {' ', 'd', 'd', 't', 't', ' ', ' ', ' ', ' ', 't', 't', 'd', 'd', ' '},
-            {' ', 'd', 'd', 't', 't', ' ', ' ', ' ', ' ', 't', 't', 'd', 'd', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}
-        };
-        
-        
-        Level level = readDefaultLevel("testLevel", levelLayout);
-        
-        Level secondLevel = readDefaultLevel("invisibleTestLevel", secondLevelLayout);
-        
-        Level thirdLevel = readDefaultLevel("experimentalLevel", thirdLevelLayout);
-        
-        Level fourthLevel = readDefaultLevel("Two pillars", fourthLevelLayut);
-        
-        
-        //generateRandomLevel("randomLevel");
-        
-        
-        List<Level> levels = new ArrayList<>();
-        levels.add(level);
-        levels.add(secondLevel);
-        levels.add(thirdLevel);
-        levels.add(fourthLevel);
-        
-        
-        
-        DefaultGame game = new DefaultGame("testGame", "This is the TEST game.", levels);
-        return game;
-    }
     
     public static DefaultLevel generateRandomLevel(String name)
     {
@@ -261,6 +146,14 @@ public class LevelReader
                 return new ToughBrick();
             case 'i':
                 return new InvisibleBrick();
+            case 's':
+                return new StickyBallBrick();
+            case 'S':
+                return new SteelBrick();
+            case 'K':
+                return new ToxicBrick();
+            case 'X':
+                return new ExplosiveBrick();
             default:
                 throw new IllegalArgumentException("char '"+brickInfo+"' is not supported.");
         }

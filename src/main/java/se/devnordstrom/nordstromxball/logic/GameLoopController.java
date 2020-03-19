@@ -30,7 +30,7 @@ public class GameLoopController implements Runnable
     
     private volatile boolean running, paused;
     
-    private static final long TARGET_FPS = 60;
+    private static final long TARGET_FPS = 600;
     private static final long OPTIMAL_TIME_NANOS = 1000_000_000 / TARGET_FPS;
     
     private volatile EntityController entityController;    

@@ -14,18 +14,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package se.devnordstrom.nordstromxball.entity;
+package se.devnordstrom.nordstromxball.logic.level;
 
 import java.util.Collection;
-import java.util.List;
+import se.devnordstrom.nordstromxball.entity.brick.Brick;
 
 /**
  *
- * @author Orville N
+ * @author Orville Nordström
  */
-public interface EntityController
+public interface Level 
 {
-    public List<PaintableEntity> getEntities();
+    public boolean isBonusLevel();
     
-    public void moveEntities(double delta);
+    public Collection<Brick> getBricks();
+    
+    public int getLevelNumber();
+    
+    public void setLevelNumber(int levelNumber);
+            
+    public String getLevelName();
+    
+    public boolean isCleared();
 }

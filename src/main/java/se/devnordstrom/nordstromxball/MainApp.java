@@ -1,6 +1,8 @@
 package se.devnordstrom.nordstromxball;
 
+import se.devnordstrom.nordstromxball.gui.GUIController;
 import se.devnordstrom.nordstromxball.gui.MainJFrame;
+import se.devnordstrom.nordstromxball.gui.controller.MenuController;
 import se.devnordstrom.nordstromxball.gui.controller.StandardGameController;
 import se.devnordstrom.nordstromxball.logic.level.CampainGame;
 import se.devnordstrom.nordstromxball.logic.sound.AudioController;
@@ -11,23 +13,41 @@ import se.devnordstrom.nordstromxball.logic.sound.AudioController;
  */
 public class MainApp 
 {
+    /**
+     * 
+     */
     public static final String APP_TITLE = "NordstromXBall";
     
+    /**
+     * 
+     * @param args 
+     */
     public static void main(String[] args)
     {
-        startCampaignMode();
+        startGUI();        
     }
     
-    private static void startCampaignMode()
+    private static void startGUI()
     {
-        //Loads the sound
+        load();
+        
+        GUIController guiController = new GUIController();
+        guiController.startGUI();
+    }
+    
+    private static void load()
+    {
         AudioController.loadSound();
-        
+    }
+    
+    private static StandardGameController getStandardGameController()
+    {
         StandardGameController gameController = new StandardGameController(CampainGame.loadGame());
-        
-        //Creates the GUI and injects the controller.
-        MainJFrame mainGui = new MainJFrame(APP_TITLE);
-        mainGui.setScreenController(gameController);
-        mainGui.startGUI();
+        return gameController;
+    }
+    
+    public static void exit()
+    {
+        System.exit(0);
     }
 }

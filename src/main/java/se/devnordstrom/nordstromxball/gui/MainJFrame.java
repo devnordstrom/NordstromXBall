@@ -28,8 +28,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.Collection;
 import javax.swing.SwingUtilities;
 import se.devnordstrom.nordstromxball.gui.controller.ScreenController;
 import se.devnordstrom.nordstromxball.entity.PaintableEntity;
@@ -85,8 +83,14 @@ public class MainJFrame extends javax.swing.JFrame
 
         if (screenController != null) {
             registerEventListeners(screenController);
+            
+            if(screenController.disableCursor()) {
+                setHiddenCursor();
+            } else {
+                setDefaultCursor();
+            }
         }
-
+        
         gameLoopController.setEntityController(screenController);
     }
 
@@ -132,6 +136,8 @@ public class MainJFrame extends javax.swing.JFrame
     {
         gameLoopThread.start();
         
+        this.setLocationRelativeTo(null);   //Centers the frame.
+        
         this.setVisible(true);
         
         gameScreenJPanel.requestFocus();
@@ -143,7 +149,19 @@ public class MainJFrame extends javax.swing.JFrame
                 .createCustomCursor(new BufferedImage( 1, 1, BufferedImage.TYPE_INT_ARGB ),
                     new Point(), null);
         
-        gameScreenJPanel.setCursor(hiddenCursor);
+        SwingUtilities.invokeLater(()-> {
+            gameScreenJPanel.setCursor(hiddenCursor);
+        });
+    }
+    
+    private void setDefaultCursor()
+    {
+        Cursor defaultCursor = new Cursor(Cursor.DEFAULT_CURSOR);
+        gameScreenJPanel.setCursor(defaultCursor);
+        
+        SwingUtilities.invokeLater(()-> {
+            gameScreenJPanel.setCursor(defaultCursor);
+        });
     }
     
     /**
@@ -186,8 +204,7 @@ public class MainJFrame extends javax.swing.JFrame
         setResizable(false);
 
         gameScreenJPanel.setBackground(new java.awt.Color(0, 0, 0));
-        gameScreenJPanel.setCursor(new java.awt.Cursor(java.awt.Cursor.NW_RESIZE_CURSOR));
-        setHiddenCursor();
+        gameScreenJPanel.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
         javax.swing.GroupLayout gameScreenJPanelLayout = new javax.swing.GroupLayout(gameScreenJPanel);
         gameScreenJPanel.setLayout(gameScreenJPanelLayout);

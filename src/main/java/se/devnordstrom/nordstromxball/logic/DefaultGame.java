@@ -16,6 +16,7 @@
  */
 package se.devnordstrom.nordstromxball.logic;
 
+import se.devnordstrom.nordstromxball.logic.level.Level;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;

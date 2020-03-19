@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Orville Nordström
+ * Copyright (C) 2020 Orville N
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,8 +18,7 @@ package se.devnordstrom.nordstromxball.entity.brick;
 
 import java.awt.Color;
 import java.util.Random;
-import se.devnordstrom.nordstromxball.entity.ball.Ball;
-import se.devnordstrom.nordstromxball.entity.ball.StickyBall;
+import se.devnordstrom.nordstromxball.entity.powerup.Explosion;
 import se.devnordstrom.nordstromxball.entity.powerup.Powerup;
 import se.devnordstrom.nordstromxball.entity.powerup.PowerupKind;
 
@@ -27,26 +26,36 @@ import se.devnordstrom.nordstromxball.entity.powerup.PowerupKind;
  *
  * @author Orville N
  */
-public class BallBrick extends Brick
-{
-    private static final Color BALL_BRICK_COLOR = Color.RED;
-    
-    private static final int RELEASE_BALL_CHANCE_PERCENTAGE = 33;
-    
-    public BallBrick()
+public class ExplosiveBrick extends Brick
+{   
+    @Override
+    public Color getColor()
     {
-        super();
-        
-        setColor(BALL_BRICK_COLOR);
-        
-        setPowerupChangePercentage(RELEASE_BALL_CHANCE_PERCENTAGE);
+        if(System.currentTimeMillis() % 100 <= 50) {
+            return Explosion.DEFAULT_COLOR;
+        } else {
+            return Explosion.FLASH_COLOR;
+        }
     }
     
     @Override
     public Powerup getPowerUp()
     {
         Powerup powerup = super.getPowerUp();
-        powerup.setPowerUpKind(PowerupKind.EXTRA_BALL);
+        
+        int powerupX = getX() - getWidth();
+        int powerupY = getY() - getHeight();
+        
+        powerup.setX(powerupX);
+        powerup.setY(powerupY);
+        
+        powerup.setPowerUpKind(PowerupKind.EXPLOSION);
         return powerup;
+    }
+    
+    @Override
+    public boolean hasPowerUp(Random random)
+    {
+        return true;
     }
 }

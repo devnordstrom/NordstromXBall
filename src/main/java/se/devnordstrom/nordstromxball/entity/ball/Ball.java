@@ -27,7 +27,7 @@ import javax.imageio.ImageIO;
 import se.devnordstrom.nordstromxball.entity.PaintableEntity;
 import se.devnordstrom.nordstromxball.entity.brick.Brick;
 import se.devnordstrom.nordstromxball.entity.pad.Pad;
-import se.devnordstrom.nordstromxball.util.Util;
+import se.devnordstrom.nordstromxball.util.Utils;
 
 /**
  *
@@ -39,11 +39,11 @@ public class Ball implements PaintableEntity
     
     private static final boolean PAINT_HITBOX = false;
     
-    public static final int DEFAULT_DIAMETER = 10;
+    private static final int DEFAULT_DIAMETER = 10;
     
-    public static final double DEFAULT_SPEED = 400;
+    private static final double DEFAULT_SPEED = 400;
 
-    public static final Color DEFAULT_COLOR = Color.GREEN;
+    private static final Color DEFAULT_COLOR = Color.GREEN;
 
     protected double x, y, xDistanceLastMove, yDistanceLastMove, 
             xSpeedMod, ySpeedMod, speed;
@@ -54,7 +54,7 @@ public class Ball implements PaintableEntity
 
     protected Color color;
 
-    protected boolean vital, lethal, attached;
+    private boolean vital, lethal, attached, sticky;
     
     protected BufferedImage smileyImage;
     
@@ -100,7 +100,7 @@ public class Ball implements PaintableEntity
     {        
         if(smileyImage == null) {
             try {
-                smileyImage = Util.readImageResource("ball/ball_default.png");
+                smileyImage = Utils.readImageResource("ball/ball_default.png");
             } catch(Exception ex) {
                 ex.printStackTrace();
             }            
@@ -409,13 +409,15 @@ public class Ball implements PaintableEntity
         if (pad == null || yDir == -1) {
             return false;
         }
-
+        
         Rectangle hitbox = getHitbox();
         if (!hitbox.intersects(pad.getHitBox())) {
             return false;
         }
         
-        if(pad.isSticky()) {
+        //Now we know a colission has occurred with the pad.
+        
+        if(pad.isSticky() || this.isSticky()) {
             pad.attachBall(this);
         } else {
             launchFromPad(pad);
@@ -496,5 +498,21 @@ public class Ball implements PaintableEntity
     public void setAttached(boolean attached)
     {
         this.attached = attached;
+    }
+    
+    /**
+     * @return the sticky
+     */
+    public boolean isSticky()
+    {
+        return sticky;
+    }
+
+    /**
+     * @param sticky the sticky to set
+     */
+    public void setSticky(boolean sticky) 
+    {
+        this.sticky = sticky;
     }
 }

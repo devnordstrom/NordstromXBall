@@ -14,8 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package se.devnordstrom.nordstromxball.logic;
+package se.devnordstrom.nordstromxball.logic.level;
 
+import se.devnordstrom.nordstromxball.logic.level.Level;
 import java.util.ArrayList;
 import java.util.Collection;
 import se.devnordstrom.nordstromxball.entity.brick.Brick;
@@ -148,9 +149,20 @@ public class DefaultLevel implements Level
         this.levelName = levelName;
     }
     
+    @Override
     public boolean isCleared()
     {
-        return countRemainingBricks() == 0;
+        Collection<Brick> bricks = this.getBricks();
+        for(Brick brick : bricks) {
+            if(brick != null 
+                    && !brick.isDestroyed()
+                    && !brick.isIndestructable()
+                    && !brick.isMustBeDestroyed()) {
+                return false;
+            }
+        }
+        
+        return true;
     }
     
     public int countRemainingBricks()

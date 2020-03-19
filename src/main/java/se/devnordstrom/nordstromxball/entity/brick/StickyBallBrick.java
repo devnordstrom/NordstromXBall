@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Orville Nordström
+ * Copyright (C) 2020 Orville N
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,40 +14,36 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package se.devnordstrom.nordstromxball.entity.ball;
+package se.devnordstrom.nordstromxball.entity.brick;
 
 import java.awt.Color;
+import se.devnordstrom.nordstromxball.entity.powerup.Powerup;
+import se.devnordstrom.nordstromxball.entity.powerup.PowerupKind;
 
 /**
  *
  * @author Orville N
  */
-public class VitalBall extends Ball
+public class StickyBallBrick extends Brick
 {
-    public VitalBall()
+    private static final Color STICKY_BALL_BRICK_COLOR = Color.YELLOW;
+    
+    private static final int RELEASE_BALL_CHANCE_PERCENTAGE = 50;
+    
+    public StickyBallBrick()
     {
         super();
         
-        setColor(Color.WHITE);
+        setColor(STICKY_BALL_BRICK_COLOR);
         
-        setVital(true);
+        setPowerupChangePercentage(RELEASE_BALL_CHANCE_PERCENTAGE);
     }
-    
-    public Color getColor()
-    {
-        long millis = System.currentTimeMillis();
-        
-        if(millis % 100 <= 50) {
-            return Color.BLACK;
-        } else {
-            return Color.GRAY;
-        }
-    }
-    
     
     @Override
-    public boolean isVital()
+    public Powerup getPowerUp()
     {
-        return true;
+        Powerup powerup = super.getPowerUp();
+        powerup.setPowerUpKind(PowerupKind.EXTRA_STICKY_BALL);
+        return powerup;
     }
 }

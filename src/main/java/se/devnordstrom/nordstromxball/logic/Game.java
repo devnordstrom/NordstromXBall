@@ -16,6 +16,8 @@
  */
 package se.devnordstrom.nordstromxball.logic;
 
+import se.devnordstrom.nordstromxball.logic.level.Level;
+
 /**
  *
  * @author Orville Nordström

@@ -21,7 +21,10 @@ package se.devnordstrom.nordstromxball.entity.powerup;
  * @author Orville N
  */
 public enum PowerupKind 
-{
+{   
     DEFAULT, REVEAL_INVISIBLE, SPLIT_BALLS, DOUBLE_SPEED, 
-    HALF_SPEED, STICKY_PAD, EXTRA_LIFE, BIGGER_PAD, SMALLER_PAD, RANDOM
+    HALF_SPEED, STICKY_PAD, EXTRA_LIFE, 
+    BIGGER_PAD, SMALLER_PAD, EXTRA_BALL, 
+    EXTRA_STICKY_BALL, KILL_PLAYER, RANDOM,
+    EXPLOSION
 }
