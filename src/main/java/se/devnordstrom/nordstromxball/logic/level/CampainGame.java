@@ -21,6 +21,8 @@ import java.util.List;
 import se.devnordstrom.nordstromxball.MainApp;
 import se.devnordstrom.nordstromxball.logic.DefaultGame;
 import se.devnordstrom.nordstromxball.logic.Game;
+import se.devnordstrom.nordstromxball.logic.animation.Animation;
+import se.devnordstrom.nordstromxball.logic.animation.StandardAnimation;
 
 /**
  * Class containing the campaign levels as well as their names.
@@ -87,7 +89,7 @@ public class CampainGame
             {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
             {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
             {' ', ' ', 'i', 'i', 'i', 'i', 'i', 'i', 'i', 'i', 'i', 'i', ' ', ' '},
-            {' ', ' ', 'i', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'i', ' ', ' '},
+            {' ', ' ', 'i', 'K', 'K', 'K', 'K', 'K', 'K', 'K', 'K', 'i', ' ', ' '},
             {' ', ' ', 'i', 'd', ' ', ' ', ' ', ' ', ' ', ' ', 'd', 'i', ' ', ' '},
             {' ', ' ', 'i', 'd', ' ', 't', 't', 't', 't', ' ', 'd', 'i', ' ', ' '},
             {' ', ' ', 'i', 'd', ' ', 't', 'b', 'b', 't', ' ', 'd', 'i', ' ', ' '},
@@ -108,18 +110,18 @@ public class CampainGame
     private static final String SNAKE_LEVEL_NAME = "Brick Snake";
     
     private static final char[][] SNAKE_LEVEL_LAYOUT = new char[][] {
-            {' ', ' ', 'd', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', 'd', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', 'd', 'd', 'd', 'd', 'd', 'd', ' ', 'b', 'b', 'b', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', 'd', ' ', 'b', 'b', 'b', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', 'd', ' ', 'b', 'b', 'b', ' ', ' '},
-            {' ', ' ', 'd', 'd', 'd', ' ', ' ', 'd', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', 'd', 'd', 'd', ' ', ' ', 'd', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', 'd', 'd', 'd', ' ', ' ', 'd', 'd', 'd', 'd', 'd', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'd', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'd', ' ', ' '},
+            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+            {'K', 'K', 'K', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+            {' ', ' ', 'K', 'K', 'K', 'K', 'K', 'K', ' ', 'b', 'b', 'b', ' ', ' '},
+            {' ', ' ', ' ', ' ', ' ', ' ', ' ', 'K', ' ', 'b', 'b', 'b', ' ', ' '},
+            {' ', ' ', ' ', ' ', ' ', ' ', ' ', 'K', ' ', 'b', 'b', 'b', ' ', ' '},
+            {' ', ' ', 'X', 'X', 'X', ' ', ' ', 'K', ' ', ' ', ' ', ' ', ' ', ' '},
+            {' ', ' ', 'X', 'X', 'X', ' ', ' ', 'K', ' ', ' ', ' ', ' ', ' ', ' '},
+            {' ', ' ', 'X', 'X', 'X', ' ', ' ', 'K', 'K', 'K', 'K', 'K', ' ', ' '},
+            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'K', 'K', 'K'},
+            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
             {'t', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't'},
-            {'t', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't'},
+            {'t', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 't'},
             {'i', 'i', 'i', 'i', 'i', 'i', 'i', 'i', 'i', 'i', 'i', 'i', 'i', 'i'},
             {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
             {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
@@ -132,11 +134,11 @@ public class CampainGame
     private static final String TWO_PILLARS_LEVEL_NAME = "2 Pillars";
     
     private static final char[][] TWO_PILLARS_LEVEL_LAYOUT = new char[][] {
-            {' ', ' ', 'd', 't', 'd', 'i', ' ', ' ', 'i', 'd', 't', 'd', ' ', ' '},
-            {' ', ' ', 'd', 't', 'd', 'i', ' ', ' ', 'i', 'd', 't', 'd', ' ', ' '},
-            {' ', ' ', 'd', 'b', 'd', 'i', ' ', ' ', 'i', 'd', 'b', 'd', ' ', ' '},
-            {' ', ' ', 'd', 't', 'd', 'i', ' ', ' ', 'i', 'd', 't', 'd', ' ', ' '},
-            {' ', ' ', 'd', 'b', 'd', 'i', ' ', ' ', 'i', 'd', 'b', 'd', ' ', ' '},
+            {' ', ' ', 'd', 'X', 'd', 'i', ' ', ' ', 'i', 'd', 'X', 'd', ' ', ' '},
+            {' ', ' ', 'd', 'X', 'd', 'i', ' ', ' ', 'i', 'd', 'X', 'd', ' ', ' '},
+            {' ', ' ', 'd', 'X', 'd', 'i', ' ', ' ', 'i', 'd', 'X', 'd', ' ', ' '},
+            {' ', ' ', 'd', 'X', 'd', 'i', ' ', ' ', 'i', 'd', 'X', 'd', ' ', ' '},
+            {' ', ' ', 'd', 'X', 'd', 'i', ' ', ' ', 'i', 'd', 'X', 'd', ' ', ' '},
             {' ', ' ', 'd', 't', 'd', 'i', ' ', ' ', 'i', 'd', 't', 'd', ' ', ' '},
             {' ', ' ', 'd', 'b', 'd', 'i', ' ', ' ', 'i', 'd', 'b', 'd', ' ', ' '},
             {' ', ' ', 'd', 't', 'd', 'i', ' ', ' ', 'i', 'd', 't', 'd', ' ', ' '},
@@ -154,19 +156,20 @@ public class CampainGame
         
     public static List<Level> loadLevels()
     {
-        Level startingLevel = LevelReader.readDefaultLevel(STARTING_LEVEL_NAME, 
+        StandardLevel startingLevel = LevelReader.readDefaultLevel(STARTING_LEVEL_NAME, 
                 STARTING_LEVEL_LAYOUT);
-        Level secondLevel = LevelReader.readDefaultLevel(SMILEY_LEVEL_NAME, 
-                SMILEY_LEVEL_LAYOUT);
-        Level thirdLevel = LevelReader.readDefaultLevel(BUNKER_LEVEL_NAME, 
+        StandardLevel secondLevel = LevelReader.readDefaultLevel(SMILEY_LEVEL_NAME, 
+                SMILEY_LEVEL_LAYOUT);                        
+        StandardLevel thirdLevel = LevelReader.readDefaultLevel(BUNKER_LEVEL_NAME, 
                 BUNKER_LEVEL_LAYOUT);
-        Level fourthLevel = LevelReader.readDefaultLevel(SNAKE_LEVEL_NAME, 
+        StandardLevel fourthLevel = LevelReader.readDefaultLevel(SNAKE_LEVEL_NAME, 
                 SNAKE_LEVEL_LAYOUT);
-        Level fifthLevel = LevelReader.readDefaultLevel(TWO_PILLARS_LEVEL_NAME,
+        StandardLevel fifthLevel = LevelReader.readDefaultLevel(TWO_PILLARS_LEVEL_NAME,
                 TWO_PILLARS_LEVEL_LAYOUT);
         
         List<Level> levels = new ArrayList<>();        
         
+
         levels.add(startingLevel);
         levels.add(secondLevel);
         levels.add(thirdLevel);

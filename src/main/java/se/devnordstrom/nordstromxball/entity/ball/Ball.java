@@ -21,9 +21,6 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.util.Random;
-import javax.imageio.ImageIO;
 import se.devnordstrom.nordstromxball.entity.PaintableEntity;
 import se.devnordstrom.nordstromxball.entity.brick.Brick;
 import se.devnordstrom.nordstromxball.entity.pad.Pad;
@@ -56,7 +53,7 @@ public class Ball implements PaintableEntity
 
     private boolean vital, lethal, attached, sticky;
     
-    protected BufferedImage smileyImage;
+    private static BufferedImage smileyImage;
     
     public Ball() 
     {
@@ -73,7 +70,7 @@ public class Ball implements PaintableEntity
     @Override
     public void paint(Graphics g) 
     {
-        if(DRAW_SMILEY) {
+        if(DRAW_SMILEY && hasImage()) {
             g.drawImage(loadImage(), getX(), getY(), null);
         } else {
             Color color = getColor();
@@ -96,6 +93,12 @@ public class Ball implements PaintableEntity
         }
     }
 
+    private boolean hasImage()
+    {
+        Color color = getColor();
+        return color != null && color.equals(DEFAULT_COLOR);
+    }
+    
     private BufferedImage loadImage()
     {        
         if(smileyImage == null) {
@@ -304,7 +307,7 @@ public class Ball implements PaintableEntity
             return false;
         }
                 
-        return collidesWith(brick.getHitBox());
+        return collidesWith(brick.getHitbox());
     }
     
     public boolean collidesWith(Rectangle hitbox)
@@ -411,7 +414,7 @@ public class Ball implements PaintableEntity
         }
         
         Rectangle hitbox = getHitbox();
-        if (!hitbox.intersects(pad.getHitBox())) {
+        if (!hitbox.intersects(pad.getHitbox())) {
             return false;
         }
         

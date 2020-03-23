@@ -1,8 +1,6 @@
 package se.devnordstrom.nordstromxball;
 
 import se.devnordstrom.nordstromxball.gui.GUIController;
-import se.devnordstrom.nordstromxball.gui.MainJFrame;
-import se.devnordstrom.nordstromxball.gui.controller.MenuController;
 import se.devnordstrom.nordstromxball.gui.controller.StandardGameController;
 import se.devnordstrom.nordstromxball.logic.level.CampainGame;
 import se.devnordstrom.nordstromxball.logic.sound.AudioController;

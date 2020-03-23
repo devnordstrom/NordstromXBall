@@ -218,7 +218,7 @@ public class Pad implements PaintableEntity
         this.sticky = sticky;
     }
     
-    public Rectangle getHitBox()
+    public Rectangle getHitbox()
     {
         Rectangle hitbox = new Rectangle((int) x, (int) y, width, height);
         

@@ -19,13 +19,15 @@ package se.devnordstrom.nordstromxball.logic.level;
 import se.devnordstrom.nordstromxball.logic.level.Level;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import se.devnordstrom.nordstromxball.entity.brick.Brick;
+import se.devnordstrom.nordstromxball.logic.animation.Animation;
 
 /**
  *
  * @author Orville Nordström
  */
-public class DefaultLevel implements Level
+public class StandardLevel implements Level
 {
     public static final int BRICK_ROWS = 18;
     public static final int BRICK_COLUMNS = 14;
@@ -36,11 +38,11 @@ public class DefaultLevel implements Level
     
     private boolean bonusLevel;
     
-    private String levelName;
+    private String levelName, startingMessage;
     
     private Brick[][] bricks;
-    
-    public DefaultLevel()
+        
+    public StandardLevel()
     {
         this(new Brick[BRICK_ROWS][BRICK_COLUMNS]);
     }
@@ -49,7 +51,7 @@ public class DefaultLevel implements Level
      * 
      * @param bricks 
      */
-    public DefaultLevel(Brick[][] bricks)
+    public StandardLevel(Brick[][] bricks)
     {
         this.bricks = bricks;
     }
@@ -73,9 +75,9 @@ public class DefaultLevel implements Level
      * @return 
      */
     @Override
-    public Collection<Brick> getBricks()
+    public List<Brick> getBricks()
     {
-        Collection<Brick> brickCollection = new ArrayList<>();
+        List<Brick> brickCollection = new ArrayList<>();
         
         for(int row = 0; row < bricks.length; row++) {
             for(int col = 0; col < bricks[row].length; col++) {
@@ -92,7 +94,6 @@ public class DefaultLevel implements Level
                 }
             }
         }
-        
         
         return brickCollection;
     }
@@ -157,7 +158,7 @@ public class DefaultLevel implements Level
             if(brick != null 
                     && !brick.isDestroyed()
                     && !brick.isIndestructable()
-                    && !brick.isMustBeDestroyed()) {
+                    && brick.isVisible()) { //Invisible bricks need not be cleared if only remain.
                 return false;
             }
         }
@@ -177,5 +178,16 @@ public class DefaultLevel implements Level
         }
         
         return desctructibleBricks;
+    }
+
+    @Override
+    public String getStartingMessage() 
+    {
+        return startingMessage;
+    }
+    
+    public void setStartingMessage(String startingMessage)
+    {
+        this.startingMessage = startingMessage;
     }
 }

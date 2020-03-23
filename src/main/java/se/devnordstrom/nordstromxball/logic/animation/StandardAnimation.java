@@ -72,7 +72,7 @@ public class StandardAnimation implements Animation
     public boolean isActive() 
     {
         return started 
-                && (System.currentTimeMillis() - startedTimeMs) < animationRunTimeMs;
+                && (System.currentTimeMillis() - startedTimeMs) < getAnimationRunTimeMs();
     }
 
     /**
@@ -120,5 +120,21 @@ public class StandardAnimation implements Animation
     public void addEntity(PaintableEntity entity)
     {
         entities.add(entity);
+    }
+    
+    /**
+     * @return the animationRunTimeMs
+     */
+    public long getAnimationRunTimeMs() 
+    {
+        return animationRunTimeMs;
+    }
+
+    /**
+     * @param animationRunTimeMs the animationRunTimeMs to set
+     */
+    public void setAnimationRunTimeMs(long animationRunTimeMs) 
+    {
+        this.animationRunTimeMs = animationRunTimeMs;
     }
 }

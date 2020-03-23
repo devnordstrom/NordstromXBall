@@ -17,7 +17,9 @@
 package se.devnordstrom.nordstromxball.logic.level;
 
 import java.util.Collection;
+import java.util.List;
 import se.devnordstrom.nordstromxball.entity.brick.Brick;
+import se.devnordstrom.nordstromxball.logic.animation.Animation;
 
 /**
  *
@@ -27,7 +29,9 @@ public interface Level
 {
     public boolean isBonusLevel();
     
-    public Collection<Brick> getBricks();
+    public List<Brick> getBricks();
+    
+    public String getStartingMessage();
     
     public int getLevelNumber();
     

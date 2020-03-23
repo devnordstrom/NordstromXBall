@@ -16,6 +16,9 @@
  */
 package se.devnordstrom.nordstromxball.entity.powerup;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author Orville N
@@ -26,5 +29,20 @@ public enum PowerupKind
     HALF_SPEED, STICKY_PAD, EXTRA_LIFE, 
     BIGGER_PAD, SMALLER_PAD, EXTRA_BALL, 
     EXTRA_STICKY_BALL, KILL_PLAYER, RANDOM,
-    EXPLOSION
+    EXPLOSION;
+    
+    public static PowerupKind[] getPossitiveKinds()
+    {
+        List<PowerupKind> possitiveKinds = new ArrayList<>();
+        
+        possitiveKinds.add(DEFAULT);
+        possitiveKinds.add(REVEAL_INVISIBLE);
+        possitiveKinds.add(SPLIT_BALLS);
+        possitiveKinds.add(HALF_SPEED);
+        possitiveKinds.add(STICKY_PAD);
+        possitiveKinds.add(EXTRA_LIFE);
+        possitiveKinds.add(BIGGER_PAD);
+        
+        return possitiveKinds.toArray(new PowerupKind[0]);
+    }
 }

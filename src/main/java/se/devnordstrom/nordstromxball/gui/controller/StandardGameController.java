@@ -24,9 +24,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import javax.swing.SwingUtilities;
@@ -56,9 +56,9 @@ import se.devnordstrom.nordstromxball.logic.sound.AudioController;
 public class StandardGameController extends ScreenController implements EntityController
 {   
     private static final boolean ENABLE_MOUSE_BALL_SPAWNING = false;
-    
     private static final boolean DISABLE_CURSOR = true;
     
+    private static final long HELP_TEXT_SHOW_TIME_MS = 6 * 1000;
     private static final int DEFAULT_SCREEN_MARGIN = 30;
     
     private boolean gameOver, resetLevel, setNextLevel, playerWaitingToServe;
@@ -76,16 +76,16 @@ public class StandardGameController extends ScreenController implements EntityCo
     private final List<Ball> balls, newBalls, ballsToRemove;
     private final List<Powerup> powerups, newPowerups, powerupsToRemove;
     private final List<Animation> currentAnimations;
-    private final List<Explosion> explosions, newExplosions;
+    private final List<Explosion> explosions, newExplosions, explosionsToRemove;
     
     private final Game game;
-    
     private final Random random;
-    
     private final Player player;
     
     private Level currentLevel;
         
+    private long lastPowerupSpawn = System.currentTimeMillis();
+    
     public StandardGameController(Game game) 
     {
         this.game = game;
@@ -94,16 +94,17 @@ public class StandardGameController extends ScreenController implements EntityCo
         this.screenArea = new Rectangle(0, 0, screenWidth, screenHeight);
         
         //Init fields.
-        pads = new ArrayList<>();
-        balls = new ArrayList<>();
-        newBalls = new ArrayList<>();
-        ballsToRemove = new ArrayList<>();
-        powerups = new ArrayList<>(); 
-        newPowerups = new ArrayList<>();
-        powerupsToRemove = new ArrayList<>();
-        currentAnimations = new ArrayList<>();
-        explosions = new ArrayList<>();
-        newExplosions = new ArrayList<>();
+        pads = new LinkedList<>();
+        balls = new LinkedList<>();
+        newBalls = new LinkedList<>();
+        ballsToRemove = new LinkedList<>();
+        powerups = new LinkedList<>(); 
+        newPowerups = new LinkedList<>();
+        powerupsToRemove = new LinkedList<>();
+        currentAnimations = new LinkedList<>();
+        explosions = new LinkedList<>();
+        newExplosions = new LinkedList<>();
+        explosionsToRemove = new LinkedList<>();
         
         random = new Random();
         player = new Player();
@@ -133,6 +134,11 @@ public class StandardGameController extends ScreenController implements EntityCo
         currentLevel = level;
                 
         resetLevel();
+        
+        if(level != null 
+                && level.getStartingMessage() != null) {
+            this.addHelpText(level.getStartingMessage());            
+        }
     }
     
     private void resetLevel()
@@ -221,12 +227,12 @@ public class StandardGameController extends ScreenController implements EntityCo
     
     private Collection<TextEntity> getGameOverEntities()
     {
-        Collection<TextEntity> textEntities = new ArrayList<>();
+        Collection<TextEntity> textEntities = new LinkedList<>();
         
         TextEntity pointText = new TextEntity();
         pointText.setColor(Color.WHITE);
-        pointText.setX(screenWidth/3);
-        pointText.setY(screenHeight / 3);
+        pointText.setX(screenWidth/5);
+        pointText.setY(screenHeight/2);
         pointText.setText("GAMEOVER MAN, GAMEOVER :( Better luck next time :(");
         
         textEntities.add(pointText);
@@ -242,7 +248,7 @@ public class StandardGameController extends ScreenController implements EntityCo
     @Override
     public List<PaintableEntity> getEntities() 
     {       
-        List<PaintableEntity> paintableEntities = new ArrayList<>();
+        List<PaintableEntity> paintableEntities = new LinkedList<>();
         
         if(isGameOver()) {
             paintableEntities.addAll(getGameOverEntities());
@@ -299,7 +305,7 @@ public class StandardGameController extends ScreenController implements EntityCo
     
     private Collection<Brick> getBricks()
     {   
-        Collection<Brick> bricks = new ArrayList<>();
+        Collection<Brick> bricks = new LinkedList<>();
                 
         if(currentLevel != null) {
             bricks.addAll(currentLevel.getBricks());            
@@ -316,11 +322,14 @@ public class StandardGameController extends ScreenController implements EntityCo
     }
     
     private void addExplosion(Explosion explosion)
-    {
-        System.out.println("addExplosion('"+ explosion.getX() +"', '"+explosion.getY()+"') started!");
-        
+    {        
         explosion.start();
         newExplosions.add(explosion);
+    }
+    
+    private void removeExplosion(Explosion explosion)
+    {
+        explosionsToRemove.add(explosion);
     }
     
     private void killPlayer()
@@ -349,7 +358,18 @@ public class StandardGameController extends ScreenController implements EntityCo
         
         addAnimation(animation);
     }
+    
+    private void addHelpText(String text)
+    {
+        TextEntity helpText = getHelpTextEntity(text);
         
+        StandardAnimation helpAnimation = new StandardAnimation();
+        helpAnimation.addEntity(helpText);
+        helpAnimation.setAnimationRunTimeMs(HELP_TEXT_SHOW_TIME_MS);
+        
+        addAnimation(helpAnimation);
+    }
+    
     private TextEntity getHelpTextEntity(String text)
     {
         if(text == null) throw new NullPointerException("The text must not be null.");
@@ -439,7 +459,13 @@ public class StandardGameController extends ScreenController implements EntityCo
             newExplosions.clear();
         }
         
-        return explosions;
+        if(!explosionsToRemove.isEmpty()) {
+            System.out.println("Now removing "+ explosionsToRemove.size() +" explosion(s).");
+            explosions.removeAll(explosionsToRemove);
+            explosionsToRemove.clear();
+        }
+        
+        return new LinkedList<>(explosions);
     }
     
     private Collection<Ball> getBalls() 
@@ -449,12 +475,12 @@ public class StandardGameController extends ScreenController implements EntityCo
             newBalls.clear();
         }
         
-        if(!ballsToRemove.isEmpty()) {
+        if(!ballsToRemove.isEmpty() && !balls.isEmpty()) {
             balls.removeAll(ballsToRemove);
             ballsToRemove.clear();
         }
         
-        return new ArrayList<>(balls);
+        return new LinkedList<>(balls);
     }
     
     private void removeBall(Ball ball)
@@ -470,11 +496,11 @@ public class StandardGameController extends ScreenController implements EntityCo
         }
         
         if(!powerupsToRemove.isEmpty()) {
-            powerupsToRemove.addAll(powerupsToRemove);
+            powerups.removeAll(powerupsToRemove);
             powerupsToRemove.clear();
         }
         
-        return powerups;
+        return new LinkedList<>(powerups);
     }
           
     private void addPowerup(Powerup powerup)
@@ -514,10 +540,11 @@ public class StandardGameController extends ScreenController implements EntityCo
                 
             case RANDOM:
                 //Assigns a randomized powerupkind.
-                PowerupKind[] powerUpKinds = PowerupKind.values();
-                int kindIndex = random.nextInt(powerUpKinds.length);
-
-                powerup.setPowerUpKind(powerUpKinds[kindIndex]);
+                
+                PowerupKind[] powerupKinds = PowerupKind.getPossitiveKinds();
+                
+                int index = random.nextInt(powerupKinds.length);
+                powerup.setPowerUpKind(powerupKinds[index]);
                 
                 /*
                     The break has intentionally been excluded here
@@ -614,7 +641,7 @@ public class StandardGameController extends ScreenController implements EntityCo
     {        
         Collection<Ball> existingBalls = this.getBalls();
         
-        Collection<Ball> newBalls = new ArrayList<>();    
+        Collection<Ball> newBalls = new LinkedList<>();    
                
         for(Ball existingBall : existingBalls) {
             if(existingBall.isAttached()) {
@@ -682,7 +709,7 @@ public class StandardGameController extends ScreenController implements EntityCo
     
     private Collection<TextEntity> getTextEntities() 
     {
-        Collection<TextEntity> textEntities = new ArrayList<>();
+        Collection<TextEntity> textEntities = new LinkedList<>();
         
         
         
@@ -832,6 +859,7 @@ public class StandardGameController extends ScreenController implements EntityCo
                 
         Collection<Ball> balls = getBalls();
         
+        //The player dies if there are no active balls.
         if(balls.isEmpty()) {
             this.killPlayer();
             return;
@@ -844,52 +872,41 @@ public class StandardGameController extends ScreenController implements EntityCo
 
             checkCollissions(ball);
             
-            if (hasFallenOutsideScreen(ball.getHitbox())) {
+            if(hasFallenOutsideScreen(ball.getHitbox())) {
                 if(ball.isVital()) {
                     this.killPlayer();
                     return;
-                }
-                
+                }                
                 removeBall(ball);
-                
                 continue;
             }
         }
+
         
-        Collection<Powerup> powerups = this.getPowerUps();
-        
-        Iterator<Powerup> powerupsIterator = powerups.iterator();
-        while(powerupsIterator.hasNext()) {
-            Powerup powerup = powerupsIterator.next();
-            
+        for(Powerup powerup : getPowerUps()) {            
             if(hasFallenOutsideScreen(powerup.getHitbox())) {
-                powerupsIterator.remove();
+                removePowerup(powerup);
                 continue;
             }
             
             for(Pad pad : pads) {
-                if(pad.getHitBox().intersects(powerup.getHitbox())) {
+                if(pad.getHitbox().intersects(powerup.getHitbox())) {
                     player.addPoints(powerup.getPoints());
                     activatePowerup(powerup);
-                    powerupsIterator.remove();
+                    removePowerup(powerup);
                     continue;
                 }
             }
         }
-        
-        List<Explosion> explosions = getExplosions();
-        Iterator<Explosion> iterator = explosions.iterator();
-        while(iterator.hasNext()) {
-            Explosion explosion = iterator.next();
-            
+
+        for(Explosion explosion : getExplosions()) {
             if(explosion == null || !explosion.isActive()) {
-                iterator.remove();
+                removeExplosion(explosion);
                 continue;
             }
             
             checkExplosion(explosion);
         }
-        
         
         if(isLevelCleared()) {
             setNextLevel = true;
@@ -967,7 +984,7 @@ public class StandardGameController extends ScreenController implements EntityCo
         for(Brick brick : bricks) {
             if(brick == null
                     || brick.isDestroyed()
-                    || !explosionHitbox.intersects(brick.getHitBox())) {
+                    || !explosionHitbox.intersects(brick.getHitbox())) {
                 continue;
             }
             

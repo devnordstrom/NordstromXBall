@@ -20,10 +20,12 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 import java.util.Random;
 import se.devnordstrom.nordstromxball.entity.PaintableEntity;
 import se.devnordstrom.nordstromxball.entity.powerup.Powerup;
 import se.devnordstrom.nordstromxball.entity.powerup.PowerupKind;
+import se.devnordstrom.nordstromxball.util.Utils;
 
 /**
  *
@@ -40,7 +42,8 @@ public class Brick implements PaintableEntity
     public static final int DEFAULT_HEIGHT = 25;
     public static final int DEFAULT_SCORE = 50;
     
-    
+    private static BufferedImage cachedBrickImage;
+        
     protected Color brickColor, borderColor;
     
     protected int x, y, width, height, points, powerupChangePercentage;
@@ -60,7 +63,7 @@ public class Brick implements PaintableEntity
         this.height = height;
         this.points = DEFAULT_SCORE;
         this.visible = true;
-        
+                
         brickColor = DEFAULT_COLOR;
         borderColor = DEFAULT_BORDER_COLOR;
         powerupChangePercentage = DEFAULT_POWERUP_CHANCE_PERCENTAGE;
@@ -71,21 +74,22 @@ public class Brick implements PaintableEntity
     {
         if(isDestroyed() || !isVisible()) return;
         
+ 
         Color color = getColor();
         if(color != null) {
             g.setColor(getColor());
             g.fillRect(getX(), getY(), getWidth(), getHeight());
         }
-        
-        
+
         Color borderColor = getBorderColor();
         if(borderColor != null) {
             g.setColor(getBorderColor());
             g.drawRect(getX(), getY(), getWidth(), getHeight());   
         }
+        
     }
     
-    public Rectangle getHitBox()
+    public Rectangle getHitbox()
     {
         if(isDestroyed()) return null;
         

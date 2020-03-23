@@ -66,12 +66,19 @@ public class Powerup extends MovableEntity
         Color fillColor = getPowerupFillColor();
         Color powerUpColor = getPowerupColor();
         
-        g.setColor(powerUpColor);
-        g.fillRect(getX(), getY(), diameter, diameter);
-        
-        
-        g.setColor(fillColor);
-        g.fillRect(getX()+5, getY()+5, diameter-10, diameter-10);        
+        if(isPossitive()) {
+            g.setColor(powerUpColor);
+            g.fillRect(getX(), getY(), diameter, diameter);
+            
+            g.setColor(fillColor);
+            g.fillRect(getX()+5, getY()+5, diameter-10, diameter-10);
+        } else {
+            Color badColor = new Color(powerUpColor.getRed(), 
+                    powerUpColor.getGreen(), powerUpColor.getBlue(), (int)(255*0.75));
+            
+            g.setColor(badColor);
+            g.fillRect(getX(), getY(), diameter, diameter);
+        }
     }
     
     private Color getPowerupFillColor()
