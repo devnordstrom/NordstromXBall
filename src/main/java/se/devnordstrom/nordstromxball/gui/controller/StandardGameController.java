@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Orville Nordström
+ * Copyright (C) 2020 Orville Nordström
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -41,12 +42,14 @@ import se.devnordstrom.nordstromxball.entity.powerup.Explosion;
 import se.devnordstrom.nordstromxball.entity.powerup.Powerup;
 import se.devnordstrom.nordstromxball.entity.powerup.PowerupKind;
 import se.devnordstrom.nordstromxball.gui.MainJFrame;
+import se.devnordstrom.nordstromxball.highscore.HighscoreEntry;
 import se.devnordstrom.nordstromxball.logic.Game;
 import se.devnordstrom.nordstromxball.logic.level.Level;
 import se.devnordstrom.nordstromxball.logic.Player;
 import se.devnordstrom.nordstromxball.logic.animation.Animation;
 import se.devnordstrom.nordstromxball.logic.animation.StandardAnimation;
 import se.devnordstrom.nordstromxball.logic.sound.AudioController;
+import se.devnordstrom.nordstromxball.util.Callable;
 
 /**
  * The main controller used for gameplay in NordstromXBall.
@@ -58,15 +61,28 @@ public class StandardGameController extends ScreenController implements EntityCo
     private static final boolean ENABLE_MOUSE_BALL_SPAWNING = false;
     private static final boolean DISABLE_CURSOR = true;
     
+    /**
+     * 
+     */
     private static final long HELP_TEXT_SHOW_TIME_MS = 6 * 1000;
+    
+    /**
+     * The number of points that will be added to the player per lives after the game is finished.
+     */
+    private static final int LIFE_POINTS_MULTIPLYER = 5 * 1000;
+    
+    /**
+     * 
+     */
     private static final int DEFAULT_SCREEN_MARGIN = 30;
     
-    private boolean gameOver, resetLevel, setNextLevel, playerWaitingToServe;
+    private boolean gameOver, resetLevel, 
+            setNextLevel, playerWaitingToServe;
         
     private volatile double totalDeltaForSecond, combinedDeltas,
             highestDelta = 0.1;
         
-    private volatile int fps, moves, movesForSecond;
+    private int fps, moves, movesPerSecond, completedLevels;
     
     private final int screenWidth, screenHeight;
 
@@ -81,12 +97,15 @@ public class StandardGameController extends ScreenController implements EntityCo
     private final Game game;
     private final Random random;
     private final Player player;
-    
     private Level currentLevel;
-        
-    private long lastPowerupSpawn = System.currentTimeMillis();
+    private Callable<HighscoreEntry> gameOverCallable;
     
-    public StandardGameController(Game game) 
+    /**
+     * 
+     * @param game 
+     * @param gameOverCallable 
+     */
+    public StandardGameController(Game game, Callable<HighscoreEntry> gameOverCallable) 
     {
         this.game = game;
         this.screenWidth = MainJFrame.DEFAULT_WIDTH;
@@ -108,6 +127,8 @@ public class StandardGameController extends ScreenController implements EntityCo
         
         random = new Random();
         player = new Player();
+        
+        this.gameOverCallable = gameOverCallable;
         
         initPlayerPad();
         
@@ -131,9 +152,19 @@ public class StandardGameController extends ScreenController implements EntityCo
      */
     private void setLevel(Level level)
     {   
+        //Increments the level count if the previuos level is set and isn't a bonus level.
+        if(currentLevel != null && !currentLevel.isBonusLevel()) {
+            completedLevels++;
+        }
+        
         currentLevel = level;
-                
+        
         resetLevel();
+        
+        if(level == null) {
+            setGameFinishedScreen();
+            return;
+        }
         
         if(level != null 
                 && level.getStartingMessage() != null) {
@@ -223,8 +254,11 @@ public class StandardGameController extends ScreenController implements EntityCo
     private void setGameOver()
     {
         gameOver = true;
+        
+        gameOverCallable.call(createHighscoreEntry());
     }
     
+    @Deprecated
     private Collection<TextEntity> getGameOverEntities()
     {
         Collection<TextEntity> textEntities = new LinkedList<>();
@@ -245,13 +279,18 @@ public class StandardGameController extends ScreenController implements EntityCo
         return DISABLE_CURSOR;
     }
     
+    /**
+     * This method is syncrhonized so as to avoid ConcurentModificationExceptions
+     * since this may occur otherwise.
+     * 
+     * @return 
+     */
     @Override
-    public List<PaintableEntity> getEntities() 
-    {       
+    public synchronized List<PaintableEntity> getEntities() 
+    {            
         List<PaintableEntity> paintableEntities = new LinkedList<>();
         
         if(isGameOver()) {
-            paintableEntities.addAll(getGameOverEntities());
             return paintableEntities;
         }
         
@@ -276,8 +315,6 @@ public class StandardGameController extends ScreenController implements EntityCo
         
         return paintableEntities;
     }
-    
-    
     
     private Collection<Pad> getPads()
     {
@@ -313,9 +350,7 @@ public class StandardGameController extends ScreenController implements EntityCo
         
         return bricks;
     }
-    
-    
-    
+       
     private void addBall(Ball ball)
     {
         newBalls.add(ball);
@@ -459,7 +494,7 @@ public class StandardGameController extends ScreenController implements EntityCo
             newExplosions.clear();
         }
         
-        if(!explosionsToRemove.isEmpty()) {
+        if(!explosionsToRemove.isEmpty()) { //This line caused a concurrentModException.
             System.out.println("Now removing "+ explosionsToRemove.size() +" explosion(s).");
             explosions.removeAll(explosionsToRemove);
             explosionsToRemove.clear();
@@ -476,7 +511,7 @@ public class StandardGameController extends ScreenController implements EntityCo
         }
         
         if(!ballsToRemove.isEmpty() && !balls.isEmpty()) {
-            balls.removeAll(ballsToRemove);
+            balls.removeAll(ballsToRemove); //This line caused a concurrentmodexception.
             ballsToRemove.clear();
         }
         
@@ -638,7 +673,7 @@ public class StandardGameController extends ScreenController implements EntityCo
     }    
     
     private void splitBalls()
-    {        
+    {   
         Collection<Ball> existingBalls = this.getBalls();
         
         Collection<Ball> newBalls = new LinkedList<>();    
@@ -792,7 +827,6 @@ public class StandardGameController extends ScreenController implements EntityCo
     {
         return null;
     }
-
     
     private void releaseAttachedBalls() 
     {        
@@ -825,12 +859,12 @@ public class StandardGameController extends ScreenController implements EntityCo
     public void moveEntities(double delta) 
     {
         moves++;
-        movesForSecond++;
+        movesPerSecond++;
         combinedDeltas += delta;
         totalDeltaForSecond += delta;
         
         if(totalDeltaForSecond >= 1.0) {
-            fps = (int) Math.round(((double) movesForSecond) / totalDeltaForSecond);
+            fps = (int) Math.round(((double) movesPerSecond) / totalDeltaForSecond);
         }
         
         if(delta > highestDelta) {
@@ -854,7 +888,7 @@ public class StandardGameController extends ScreenController implements EntityCo
         //Moves all the entities in the game.
         Collection<PaintableEntity> entities = getEntities();
         for (PaintableEntity entity : entities) {
-            entity.move(delta);
+            if(entity != null) entity.move(delta);
         }
                 
         Collection<Ball> balls = getBalls();
@@ -866,7 +900,7 @@ public class StandardGameController extends ScreenController implements EntityCo
         }
         
         for(Ball ball : balls) {
-            if(ball.isAttached()) {
+            if(ball == null || ball.isAttached()) {
                 continue;
             }
 
@@ -1020,4 +1054,31 @@ public class StandardGameController extends ScreenController implements EntityCo
         
         return false;
     }
+    
+    private HighscoreEntry createHighscoreEntry()
+    {
+        HighscoreEntry highscoreEntry = new HighscoreEntry();
+        
+        String gameMode = "";
+        if(game != null) gameMode = game.getName();
+        
+        highscoreEntry.setGameMode(gameMode);
+        highscoreEntry.setCreatedAt(new Date());
+        highscoreEntry.setCompletedLevels(completedLevels);
+        highscoreEntry.setPlayerName(player.getName());
+        
+        int points = player.getPoints();
+        points += player.getLifeCount() * LIFE_POINTS_MULTIPLYER;
+        highscoreEntry.setPoints(points);
+        
+        return highscoreEntry;
+    }
+    
+    /**
+     * 
+     */
+    private void setGameFinishedScreen()
+    {        
+        gameOverCallable.call(createHighscoreEntry());
+    }            
 }

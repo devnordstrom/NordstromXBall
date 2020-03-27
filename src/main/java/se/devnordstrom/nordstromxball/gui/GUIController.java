@@ -18,10 +18,15 @@ package se.devnordstrom.nordstromxball.gui;
 
 import javax.swing.JFrame;
 import se.devnordstrom.nordstromxball.MainApp;
+import se.devnordstrom.nordstromxball.gui.controller.GameOverScreenController;
+import se.devnordstrom.nordstromxball.gui.controller.TextScreenController;
 import se.devnordstrom.nordstromxball.gui.controller.MenuController;
 import se.devnordstrom.nordstromxball.gui.controller.ScreenController;
 import se.devnordstrom.nordstromxball.gui.controller.StandardGameController;
+import se.devnordstrom.nordstromxball.highscore.HighscoreEntry;
+import se.devnordstrom.nordstromxball.logic.Game;
 import se.devnordstrom.nordstromxball.logic.level.CampainGame;
+import se.devnordstrom.nordstromxball.util.Callable;
 import se.devnordstrom.nordstromxball.util.Utils;
 
 /**
@@ -51,9 +56,25 @@ public class GUIController
     
     private StandardGameController getGameController()
     {
+        Callable<HighscoreEntry> callable = (HighscoreEntry entry) -> {
+            setGameOverScreen(entry);
+        };
+
+        Game game = CampainGame.loadGame();
+        
         //Inits the game controller.
-        StandardGameController gameController = new StandardGameController(CampainGame.loadGame());
+        StandardGameController gameController = new StandardGameController(game, callable);
         return gameController;
+    }
+    
+    private void setGameOverScreen(HighscoreEntry entry)
+    {
+        ScreenController screenController = new GameOverScreenController(entry, 
+                getGoToMenuRunnable(), 
+                getExitRunnable(),
+                getShowHighscoreRunnable());
+        
+        setScreenController(screenController);
     }
     
     private MenuController getMenuController()
@@ -69,7 +90,14 @@ public class GUIController
         return menuController;
     }
     
-        private Runnable getStartCampaignGameRunnable()
+    private Runnable getGoToMenuRunnable()
+    {
+        return ()-> {
+            setScreenController(getMenuController());
+        };
+    }
+    
+    private Runnable getStartCampaignGameRunnable()
     {
         Runnable startGameTask = () -> {
             setScreenController(getGameController());
@@ -80,11 +108,24 @@ public class GUIController
     
     private Runnable getShowHelpRunnable()
     {
-        Runnable showHelpRunnable = ()->{
-            Utils.showMessage("Help option not supported yet!", MainApp.APP_TITLE);
+        Runnable showHelpRunnable = () -> {
+            setScreenController(getHelpScreenController());            
         };
         
         return showHelpRunnable;
+    }
+    
+    /**
+     * 
+     * @return 
+     */
+    private ScreenController getHelpScreenController()
+    {
+        TextScreenController helpGuiController = new TextScreenController(MainApp.HELP_TEXT,
+                getGoToMenuRunnable(),
+                getExitRunnable());
+        
+        return helpGuiController;        
     }
     
     private Runnable getShowHighscoreRunnable()
@@ -99,7 +140,6 @@ public class GUIController
     private Runnable getExitRunnable()
     {
         Runnable exitRunnable = () -> {
-            Utils.showMessage("Thank you so much for playing, have a nice day :)", MainApp.APP_TITLE);
             MainApp.exit();
         };
         

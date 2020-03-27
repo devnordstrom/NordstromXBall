@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Orville Nordström
+ * Copyright (C) 2020 Orville Nordström
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ public class GameLoopController implements Runnable
     
     private volatile boolean running, paused;
     
-    private static final long TARGET_FPS = 600;
+    private static final long TARGET_FPS = 60;
     private static final long OPTIMAL_TIME_NANOS = 1000_000_000 / TARGET_FPS;
     
     private volatile EntityController entityController;    

@@ -18,7 +18,6 @@ package se.devnordstrom.nordstromxball.util;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -29,14 +28,15 @@ import java.util.List;
 import se.devnordstrom.nordstromxball.entity.EntityController;
 import se.devnordstrom.nordstromxball.entity.MenuItemEntity;
 import se.devnordstrom.nordstromxball.entity.PaintableEntity;
+import se.devnordstrom.nordstromxball.entity.TextEntity;
 
 
 /**
  *
  * @author Orville N
  */
-public class MenuUtil {
-
+public class MenuUtil 
+{
     public static String DEFAULT_FONT_NAME = "Tahoma";
     
     public static final Color MENU_COLOR = Color.WHITE;
@@ -49,6 +49,8 @@ public class MenuUtil {
     
     public static final Font MENU_ITEM_FONT = new Font(DEFAULT_FONT_NAME, Font.PLAIN, 30);
     
+    public static final Font TEXT_ITEM_FONT = new Font(DEFAULT_FONT_NAME, Font.PLAIN, 22);
+    
     public static final int MENU_ITEM_WIDTH = 200;
     
     public static final int MENU_ITEM_HEIGHT = 50;
@@ -56,6 +58,19 @@ public class MenuUtil {
     private static final int MENU_TEXT_MARGIN_X = 0;
     
     private static final int MENU_TEXT_MARGIN_Y = 0;
+    
+    public static TextEntity createTextItem(int x, int y, String text)
+    {
+        TextEntity textItem = new TextEntity();
+        
+        textItem.setFont(TEXT_ITEM_FONT);
+        textItem.setColor(MENU_COLOR);
+        textItem.setX(x);
+        textItem.setY(y);
+        textItem.setText(text);
+
+        return textItem;
+    }
     
     /**
      * 

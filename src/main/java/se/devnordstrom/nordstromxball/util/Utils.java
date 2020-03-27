@@ -17,7 +17,14 @@
 package se.devnordstrom.nordstromxball.util;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.net.URL;
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
@@ -47,7 +54,8 @@ public class Utils
      * @param text
      * @param title 
      */
-    public static void showMessage(String text, String title) {
+    public static void showMessage(String text, String title) 
+    {
         JOptionPane.showMessageDialog(null, text, title, JOptionPane.INFORMATION_MESSAGE);
     }
     
@@ -56,7 +64,65 @@ public class Utils
      * @param text
      * @param title 
      */
-    public static void showErrorMesage(String text, String title) {
+    public static void showErrorMesage(String text, String title) 
+    {
         JOptionPane.showMessageDialog(null, text, title, JOptionPane.ERROR_MESSAGE);
+    }
+    
+    /**
+     * 
+     * @param targetFile
+     * @return
+     * @throws FileNotFoundException
+     * @throws IOException
+     * @throws ClassNotFoundException 
+     */
+    public static Object unserialize(File targetFile) throws FileNotFoundException, 
+            IOException, ClassNotFoundException
+    {
+        if(targetFile == null)
+            throw new NullPointerException();
+        
+        if(targetFile.isDirectory())
+            throw new IllegalArgumentException("The targetFile must not be a directory!");
+        
+        FileInputStream fis = new FileInputStream(targetFile);
+        ObjectInputStream ois = new ObjectInputStream(fis);
+        Object unserializedObject = ois.readObject();
+        
+        fis.close();
+        ois.close();
+        
+        return unserializedObject;
+    }
+    
+    /**
+     * 
+     * @param targetFile
+     * @param object
+     * @throws FileNotFoundException
+     * @throws IOException 
+     */
+    public static void serialize(File targetFile, Object object) throws FileNotFoundException, IOException
+    {
+        if(targetFile == null)
+            throw new NullPointerException();
+        
+        if(targetFile.isDirectory())
+            throw new IllegalArgumentException("The targetFile must not be a directory!");
+        
+        if(object == null)
+            throw new IllegalArgumentException("The object must not be null!");
+        
+        if(!(object instanceof Serializable))
+            throw new IllegalArgumentException("The object must be an instance of serializable.");
+        
+        FileOutputStream fos = new FileOutputStream(targetFile);
+        ObjectOutputStream oos = new ObjectOutputStream(fos);
+        
+        oos.writeObject(object);
+        
+        fos.close();
+        oos.close();
     }
 }

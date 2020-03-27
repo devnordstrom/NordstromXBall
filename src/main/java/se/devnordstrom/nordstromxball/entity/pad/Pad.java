@@ -22,6 +22,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import se.devnordstrom.nordstromxball.entity.PaintableEntity;
 import se.devnordstrom.nordstromxball.entity.ball.Ball;
 
@@ -53,7 +54,7 @@ public class Pad implements PaintableEntity
         width = DEFAULT_WIDTH;
         height = DEFAULT_HEIGHT;
         
-        attachedBalls = new ArrayList<>();
+        attachedBalls = new LinkedList<>();
         
         lastTargetX = -1;
         lastTargetY = -1;

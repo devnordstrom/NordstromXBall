@@ -35,6 +35,8 @@ public class CampainGame
     
     private static final String CAMPAIGN_DESCRIPTION = "The campaign mode for "+ MainApp.APP_TITLE;
     
+    
+    
     private static final String STARTING_LEVEL_NAME = "Intro Level";
     
     private static final char[][] STARTING_LEVEL_LAYOUT = {
@@ -82,6 +84,8 @@ public class CampainGame
             {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
             {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}
     };
+    
+    
     
     private static final String BUNKER_LEVEL_NAME = "Ping Pong Bunker";
     
@@ -171,10 +175,11 @@ public class CampainGame
         
 
         levels.add(startingLevel);
-        levels.add(secondLevel);
+        levels.add(secondLevel);        
         levels.add(thirdLevel);
         levels.add(fourthLevel);
         levels.add(fifthLevel);
+        
         
         return levels;        
     }

@@ -19,7 +19,6 @@ package se.devnordstrom.nordstromxball.gui.controller;
 import java.awt.Color;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
 import java.util.List;
 import se.devnordstrom.nordstromxball.MainApp;
@@ -33,15 +32,15 @@ import se.devnordstrom.nordstromxball.util.MenuUtil;
  * @author Orville N
  */
 public class MenuController extends ScreenController
-{    
-    private static final int MARGIN_HORIZONTAL = 50;
-    private static final int MARGIN_VERTICAL = 50;
-    private static final int ITEM_VERTICAL_MARGIN = 65;
+{   
+    public static final int MARGIN_HORIZONTAL = 50;
+    public static final int MARGIN_VERTICAL = 50;
+    public static final int ITEM_VERTICAL_MARGIN = 65;
     
     private static final Color MENU_COLOR = Color.WHITE;
     
     private final List<PaintableEntity> menuItems = new ArrayList<>();
-        
+    
     private final Runnable startGameRunnable, showHelpRunnable, 
             showHighscoreRunnable, exitRunnable;
     
@@ -50,9 +49,7 @@ public class MenuController extends ScreenController
     private final MouseListener mouseListener;
     
     private boolean hasSetMenuItemsRun;
-    
-    
-    
+
     public MenuController(Runnable startGameRunnable, 
             Runnable showHelpRunnable, 
             Runnable showHighscoreRunnable,

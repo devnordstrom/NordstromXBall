@@ -51,11 +51,15 @@ public class MainJFrame extends javax.swing.JFrame
         initComponents();
         
         Runnable repaintRunnable = () -> {
-            gameScreenJPanel.repaint();
+            SwingUtilities.invokeLater(()-> {
+                gameScreenJPanel.repaint();
+            });
         };      
         
         gameLoopController = new GameLoopController(repaintRunnable);
+        
         gameLoopThread = new Thread(gameLoopController);
+        gameLoopThread.setName("gameLoopThread");
     }
     
     private void paintGameScreen(Graphics g)
@@ -92,6 +96,8 @@ public class MainJFrame extends javax.swing.JFrame
         }
         
         gameLoopController.setEntityController(screenController);
+        
+        requestFocus();
     }
 
     private void removeEventListeners() 
@@ -115,19 +121,20 @@ public class MainJFrame extends javax.swing.JFrame
 
     private void registerEventListeners(ScreenController screenController) 
     {
-        if (screenController.getMouseListener() != null) {
+        if(screenController.getMouseListener() != null) {
             addMouseListener(screenController.getMouseListener());
         }
 
-        if (screenController.getMouseMotionListener() != null) {
+        if(screenController.getMouseMotionListener() != null) {
             addMouseMotionListener(screenController.getMouseMotionListener());
         }
 
-        if (screenController.getMouseWheelListener() != null) {
+        if(screenController.getMouseWheelListener() != null) {
             addMouseWheelListener(screenController.getMouseWheelListener());
         }
 
-        if (screenController.getKeyListener() != null) {
+        if(screenController.getKeyListener() != null) {
+            System.out.println("MainJFrame now adding key listener...");
             addKeyListener(screenController.getKeyListener());
         }
     }
@@ -198,7 +205,6 @@ public class MainJFrame extends javax.swing.JFrame
         };
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setAutoRequestFocus(false);
         setBackground(new java.awt.Color(0, 0, 0));
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setResizable(false);
