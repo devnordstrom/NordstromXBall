@@ -354,12 +354,15 @@ public class StandardGameController extends ScreenController implements EntityCo
     private void addBall(Ball ball)
     {
         newBalls.add(ball);
+        
+        AudioController.playSoundKind(AudioController.BOUNCE_PAD);
     }
     
     private void addExplosion(Explosion explosion)
     {        
         explosion.start();
         newExplosions.add(explosion);
+        AudioController.playSoundKind(AudioController.EXPLOSION);
     }
     
     private void removeExplosion(Explosion explosion)
@@ -374,6 +377,8 @@ public class StandardGameController extends ScreenController implements EntityCo
         if(player.getLifeCount() <= 0) {
             setGameOver();
         }
+        
+        AudioController.playSoundKind(AudioController.PLAYER_LOST_LIFE);
         
         setKillPlayerAnimation();
         
@@ -504,7 +509,7 @@ public class StandardGameController extends ScreenController implements EntityCo
     }
     
     private Collection<Ball> getBalls() 
-    {      
+    {   
         if(!newBalls.isEmpty()) {
             balls.addAll(newBalls);
             newBalls.clear();
@@ -587,6 +592,12 @@ public class StandardGameController extends ScreenController implements EntityCo
                 */
             default:
                 newPowerups.add(powerup);
+                
+                if(powerup.getPowerUpKind() == PowerupKind.KILL_PLAYER) {
+                    AudioController.playSoundKind(AudioController.POWERUP_KILL_SPAWN);
+                } else {
+                    AudioController.playSoundKind(AudioController.POWERUP_SPAWN);
+                }
         }
     }
     
@@ -619,10 +630,10 @@ public class StandardGameController extends ScreenController implements EntityCo
             case STICKY_PAD:
                 setStickyPads();
                 break;
-            case DOUBLE_SPEED:
+            case INCREASED_SPEED:
                 modifyBallSpeed(2.0);
                 break;
-            case HALF_SPEED:
+            case DECREASED_SPEED:
                 modifyBallSpeed(0.5);
                 break;
             case EXTRA_LIFE:
@@ -642,6 +653,7 @@ public class StandardGameController extends ScreenController implements EntityCo
         }
         
         if(powerup.getPowerUpKind() != PowerupKind.KILL_PLAYER) {
+            AudioController.playSoundKind(AudioController.POWERUP_SPAWN);
             addPowerupAnimation(powerup);
         }
     }
@@ -670,7 +682,7 @@ public class StandardGameController extends ScreenController implements EntityCo
         }
         
         return hitBricks;
-    }    
+    }   
     
     private void splitBalls()
     {   
@@ -744,6 +756,8 @@ public class StandardGameController extends ScreenController implements EntityCo
     
     private Collection<TextEntity> getTextEntities() 
     {
+        long startTimeMs = System.currentTimeMillis();
+        
         Collection<TextEntity> textEntities = new LinkedList<>();
         
         
@@ -779,6 +793,10 @@ public class StandardGameController extends ScreenController implements EntityCo
         levelInfoText.setX(DEFAULT_SCREEN_MARGIN);
         levelInfoText.setY(DEFAULT_SCREEN_MARGIN * 3);
         textEntities.add(levelInfoText);
+        
+        long execTimeMs = System.currentTimeMillis() - startTimeMs;
+        
+        System.out.println("getTextEntities() execTimeMs: "+execTimeMs);
         
         return textEntities;
     }
@@ -953,7 +971,8 @@ public class StandardGameController extends ScreenController implements EntityCo
     {   
         //Checks if the ball hits the ceiling of the level.
         if(ball.getY() <= screenArea.getY()) {
-            AudioController.playBounceSound();
+            AudioController.playSoundKind(AudioController.BOUNCE_WALL);
+            
             ball.setY(screenArea.getY()+1);
             ball.invertyDir();
             ball.addBounce();
@@ -962,7 +981,7 @@ public class StandardGameController extends ScreenController implements EntityCo
         
         //Checks if the ball hits the left edge of the level.
         if(ball.getX() <= screenArea.getX()) {
-            AudioController.playBounceSound();
+            AudioController.playSoundKind(AudioController.BOUNCE_WALL);
             ball.setX(screenArea.getX()+1);
             ball.invertxDir();
             ball.addBounce();
@@ -971,7 +990,7 @@ public class StandardGameController extends ScreenController implements EntityCo
         
         //Checks if the ball hits the right edge of the level.
         if(ball.getX()+ball.getDiameter() >= screenArea.getX()+screenArea.getWidth()) {
-            AudioController.playBounceSound();
+            AudioController.playSoundKind(AudioController.BOUNCE_WALL);
             ball.setX((screenArea.getX()+screenArea.getWidth())-ball.getDiameter()-1);
             ball.invertxDir();
             ball.addBounce();
@@ -981,14 +1000,14 @@ public class StandardGameController extends ScreenController implements EntityCo
         //Check collissions for all bricks.
         for (Brick brick : getBricks()) {
             if (ball.collidesWith(brick)) {
-                AudioController.playBounceSound();
-                
                 hitBrick(brick);
             }
         }
                 
         for (Pad pad : pads) {
-            ball.collidesWith(pad);
+            if(ball.collidesWith(pad)) {
+                AudioController.playSoundKind(AudioController.BOUNCE_PAD);
+            }
         }
     }
     
@@ -1002,6 +1021,10 @@ public class StandardGameController extends ScreenController implements EntityCo
                 
         if(brick.hasPowerUp(random)) {
             addPowerup(brick.getPowerUp());
+        } else if(brick.isIndestructable()) {
+            AudioController.playSoundKind(AudioController.BOUNCE_WALL);
+        } else {
+            AudioController.playSoundKind(AudioController.BREAK_BRICK);
         }
     }
     

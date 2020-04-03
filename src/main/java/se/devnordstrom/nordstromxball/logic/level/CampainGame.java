@@ -111,6 +111,7 @@ public class CampainGame
     };
 
     
+    
     private static final String SNAKE_LEVEL_NAME = "Brick Snake";
     
     private static final char[][] SNAKE_LEVEL_LAYOUT = new char[][] {

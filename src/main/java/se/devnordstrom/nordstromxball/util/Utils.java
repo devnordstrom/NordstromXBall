@@ -26,6 +26,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 
@@ -35,20 +39,6 @@ import javax.swing.JOptionPane;
  */
 public class Utils 
 {
-    /**
-     * 
-     * @param imageName
-     * @return
-     * @throws IOException 
-     */
-    public static BufferedImage readImageResource(String imageName) throws IOException
-    {
-        String fullName = "img/"+imageName;
-        URL imageUrl = Utils.class.getClassLoader().getResource(fullName);
-        BufferedImage image = ImageIO.read(imageUrl);
-        return image;
-    }
-    
     /**
      * Shows an Information message using JOptionPane.showMessageDialog.
      * @param text

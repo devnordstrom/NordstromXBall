@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import se.devnordstrom.nordstromxball.gui.GUIController;
 import se.devnordstrom.nordstromxball.logic.sound.AudioController;
+import se.devnordstrom.nordstromxball.util.ImageController;
 import se.devnordstrom.nordstromxball.util.Utils;
 
 /**
@@ -80,6 +81,9 @@ public class MainApp
     {
         //Loads the sound of the game.
         AudioController.loadSound();
+        
+        //Loads the images.
+        ImageController.load();
     }
     
     public static void exit()

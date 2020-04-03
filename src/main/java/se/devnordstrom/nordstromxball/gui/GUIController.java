@@ -19,6 +19,7 @@ package se.devnordstrom.nordstromxball.gui;
 import javax.swing.JFrame;
 import se.devnordstrom.nordstromxball.MainApp;
 import se.devnordstrom.nordstromxball.gui.controller.GameOverScreenController;
+import se.devnordstrom.nordstromxball.gui.controller.HighscoreScreenController;
 import se.devnordstrom.nordstromxball.gui.controller.TextScreenController;
 import se.devnordstrom.nordstromxball.gui.controller.MenuController;
 import se.devnordstrom.nordstromxball.gui.controller.ScreenController;
@@ -115,6 +116,15 @@ public class GUIController
         return showHelpRunnable;
     }
     
+    private Runnable getExitRunnable()
+    {
+        Runnable exitRunnable = () -> {
+            MainApp.exit();
+        };
+        
+        return exitRunnable;
+    }
+    
     /**
      * 
      * @return 
@@ -128,21 +138,30 @@ public class GUIController
         return helpGuiController;        
     }
     
-    private Runnable getShowHighscoreRunnable()
+    private ScreenController getHighscoreScreenController(String gameMode)
     {
-        Runnable showHighscoreRunnable = ()->{
-            Utils.showMessage("Highscore Option not supported yet!.", MainApp.APP_TITLE);
-        };
+        HighscoreScreenController highscoreScreenController;
+        highscoreScreenController = new HighscoreScreenController(gameMode,
+                getGoToMenuRunnable(), getExitRunnable());
         
-        return showHighscoreRunnable;
+        return highscoreScreenController;
     }
     
-    private Runnable getExitRunnable()
+    private Callable<String> getShowHighscoreCallable()
     {
-        Runnable exitRunnable = () -> {
-            MainApp.exit();
+        Callable<String> showHighscoreCallable = (String gameMode) -> {
+            setScreenController(getHighscoreScreenController(gameMode));
         };
         
-        return exitRunnable;
+        return showHighscoreCallable;
+    }
+    
+    private Runnable getShowHighscoreRunnable()
+    {
+        return () -> {
+            Callable<String> showHighscoreCallable = getShowHighscoreCallable();
+            
+            showHighscoreCallable.call(null);
+        };
     }
 }

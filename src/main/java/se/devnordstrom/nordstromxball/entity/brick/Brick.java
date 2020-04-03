@@ -41,9 +41,7 @@ public class Brick implements PaintableEntity
     public static final int DEFAULT_WIDTH = 50;
     public static final int DEFAULT_HEIGHT = 25;
     public static final int DEFAULT_SCORE = 50;
-    
-    private static BufferedImage cachedBrickImage;
-        
+            
     protected Color brickColor, borderColor;
     
     protected int x, y, width, height, points, powerupChangePercentage;
@@ -73,8 +71,7 @@ public class Brick implements PaintableEntity
     public void paint(Graphics g)
     {
         if(isDestroyed() || !isVisible()) return;
-        
- 
+                
         Color color = getColor();
         if(color != null) {
             g.setColor(getColor());
@@ -86,7 +83,6 @@ public class Brick implements PaintableEntity
             g.setColor(getBorderColor());
             g.drawRect(getX(), getY(), getWidth(), getHeight());   
         }
-        
     }
     
     public Rectangle getHitbox()

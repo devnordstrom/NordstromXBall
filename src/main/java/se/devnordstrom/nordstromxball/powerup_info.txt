@@ -1,0 +1,7 @@
+- Add an image for all the powerups.
+
+- Add sound effects when a possitive powerup is spawned.
+
+- Add sound effects when a negative powerup is spawned.
+
+- Balance the powerups.

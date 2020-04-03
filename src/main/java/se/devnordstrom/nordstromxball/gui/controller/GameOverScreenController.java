@@ -176,16 +176,6 @@ public class GameOverScreenController extends ScreenController
         
         
         if(HighscoreController.isQualifiedForHighScore(entry)) {
-            /*
-            
-                Congratulations! Your score qualifies you
-                for a highscore entry,
-
-                What's your name?
-
-                __________________ OK
-            
-            */
             
             addStatItem("Congratulations! Your score qualifies you");
             addStatItem("for a highscore entry!");
@@ -250,7 +240,7 @@ public class GameOverScreenController extends ScreenController
         
         Callable<String> callable = (String playerName) -> {
             if(validateName(playerName)) {
-                manageSaveEntryToHighscore(playerName);
+                manageSaveEntryToHighscore(playerName);                
             }
         };
         
@@ -289,10 +279,8 @@ public class GameOverScreenController extends ScreenController
         
         try {
             saveEntryToHighscore(playerName);
-            
-            Utils.showMessage("Highscore screen not supported yet!", MainApp.APP_TITLE);
-            
-            goToMenuRunnable.run();
+                        
+            showHighscoreRunnable.run();
         } catch(Exception ex) {
             ex.printStackTrace();
             Utils.showErrorMesage("Couldn't save the entry: " + ex.getMessage(), MainApp.APP_TITLE);

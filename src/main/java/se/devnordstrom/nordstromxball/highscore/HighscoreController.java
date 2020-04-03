@@ -37,6 +37,8 @@ public class HighscoreController
     /**
      * Reads and sorts the Highscore entries for the gameMode provided.
      * 
+     * If the gameMode is null then all entries will be returned.
+     * 
      * @param gameMode
      * @return 
      */
@@ -111,6 +113,8 @@ public class HighscoreController
         entries.add(entry);
         
         Collections.sort(entries);
+        Collections.reverse(entries);
+        
         
         /*
             Since only a certain number of entries are saved/shown.
@@ -119,7 +123,8 @@ public class HighscoreController
             entry with the 11th highest number of points then this
             entry will not qualify.
         */
-        return entries.indexOf(entry) <= DISPLAY_HIGHSCORE_MAXIMUM;
+        
+        return entries.indexOf(entry) < DISPLAY_HIGHSCORE_MAXIMUM;
     }
     
     /**

@@ -17,11 +17,13 @@
 package se.devnordstrom.nordstromxball.entity.powerup;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import se.devnordstrom.nordstromxball.entity.MovableEntity;
-import se.devnordstrom.nordstromxball.entity.PaintableEntity;
+import se.devnordstrom.nordstromxball.util.ImageController;
+import se.devnordstrom.nordstromxball.util.Utils;
 
 /**
  *
@@ -29,11 +31,9 @@ import se.devnordstrom.nordstromxball.entity.PaintableEntity;
  */
 public class Powerup extends MovableEntity
 {   
-    public static final int DEFAULT_WIDTH = 25;
+    public static final int DEFAULT_DIAMETER = 25;
     public static final int DEFAULT_SPEED = 200;
     public static final int DEFAULT_POINTS = 500;
-    
-    //public static final Font DEFAULT_FONT = new Font("Tahoma", Font.BOLD, DEFAULT_WIDTH);
     
     private int diameter, points;
     
@@ -46,10 +46,10 @@ public class Powerup extends MovableEntity
     
     public Powerup(int x, int y)
     {
-        diameter = DEFAULT_WIDTH;
+        diameter = DEFAULT_DIAMETER;
         points = DEFAULT_POINTS;
         
-        powerUpKind = PowerupKind.DEFAULT;
+        powerUpKind = PowerupKind.RANDOM;
         
         setX(x);
         setY(y);
@@ -62,7 +62,18 @@ public class Powerup extends MovableEntity
     
     @Override
     public void paint(Graphics g) 
-    {        
+    {   
+        BufferedImage img = getImage();
+        
+        if(img != null) {
+            g.drawImage(img, getX(), getY(), null);
+        } else {
+            paintWithColors(g);
+        }
+    }
+
+    private void paintWithColors(Graphics g)
+    {
         Color fillColor = getPowerupFillColor();
         Color powerUpColor = getPowerupColor();
         
@@ -78,7 +89,15 @@ public class Powerup extends MovableEntity
             
             g.setColor(badColor);
             g.fillRect(getX(), getY(), diameter, diameter);
-        }
+        }   
+    }
+    
+    private BufferedImage getImage()
+    {
+        String imageName = "powerup"+ File.separator+"powerup_"
+                + getPowerUpKind().toString().toLowerCase()+".png";
+        
+        return ImageController.quietReadImageResource(imageName);
     }
     
     private Color getPowerupFillColor()
@@ -101,10 +120,10 @@ public class Powerup extends MovableEntity
             case SPLIT_BALLS:
                 powerUpColor = new Color(25, 25, 25);
                 break;
-            case DOUBLE_SPEED:
+            case INCREASED_SPEED:
                 powerUpColor = Color.ORANGE;
                 break;
-            case HALF_SPEED:
+            case DECREASED_SPEED:
                 powerUpColor = Color.MAGENTA;
                 break;
             case STICKY_PAD:
@@ -128,7 +147,6 @@ public class Powerup extends MovableEntity
                 
                 powerUpColor = new Color(red, green, blue);
                 break;
-            case DEFAULT:
             default:
                 powerUpColor = Color.RED;
         }
@@ -136,14 +154,15 @@ public class Powerup extends MovableEntity
         return powerUpColor;
     }
     
+    @Deprecated
     private boolean isPossitive()
     {
         switch(getPowerUpKind()) {
             case KILL_PLAYER:
             case SMALLER_PAD:
-            case DOUBLE_SPEED:
+            case INCREASED_SPEED:
+            case RANDOM:
                 return false;
-                
             default:
                 return true;
         }
@@ -211,16 +230,10 @@ public class Powerup extends MovableEntity
     @Override
     public String toString()
     {   
-        String text;
-        if(powerUpKind == PowerupKind.DEFAULT 
-                || powerUpKind == PowerupKind.RANDOM) {
-            text = getPoints() + "+";
-        } else {
-            text = powerUpKind.toString();
-            text = text.replace('_', ' ');
-            text += "("+getPoints()+"+)";
-        }
-        
+        String text = powerUpKind.toString();
+        text = text.replace('_', ' ');
+        text += "("+getPoints()+"+)";
+
         return text;        
     }
 }

@@ -36,8 +36,6 @@ public class TextScreenController extends ScreenController
     
     public static final int TEXT_VERTICAL_MARGIN = 24;    
     
-    
-    
     private final String text;
     
     private final MouseListener mouseListener;

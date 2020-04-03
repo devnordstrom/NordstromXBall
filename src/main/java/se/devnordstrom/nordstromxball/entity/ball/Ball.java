@@ -24,6 +24,7 @@ import java.awt.image.BufferedImage;
 import se.devnordstrom.nordstromxball.entity.PaintableEntity;
 import se.devnordstrom.nordstromxball.entity.brick.Brick;
 import se.devnordstrom.nordstromxball.entity.pad.Pad;
+import se.devnordstrom.nordstromxball.util.ImageController;
 import se.devnordstrom.nordstromxball.util.Utils;
 
 /**
@@ -103,7 +104,7 @@ public class Ball implements PaintableEntity
     {        
         if(smileyImage == null) {
             try {
-                smileyImage = Utils.readImageResource("ball/ball_default.png");
+                smileyImage = ImageController.readImageResource("ball/ball_default.png");
             } catch(Exception ex) {
                 ex.printStackTrace();
             }            

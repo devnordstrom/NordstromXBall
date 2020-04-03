@@ -25,20 +25,18 @@ import java.util.List;
  */
 public enum PowerupKind 
 {   
-    DEFAULT, REVEAL_INVISIBLE, SPLIT_BALLS, DOUBLE_SPEED, 
-    HALF_SPEED, STICKY_PAD, EXTRA_LIFE, 
+    REVEAL_INVISIBLE, SPLIT_BALLS, INCREASED_SPEED, 
+    DECREASED_SPEED, STICKY_PAD, EXTRA_LIFE, 
     BIGGER_PAD, SMALLER_PAD, EXTRA_BALL, 
-    EXTRA_STICKY_BALL, KILL_PLAYER, RANDOM,
-    EXPLOSION;
+    EXTRA_STICKY_BALL, KILL_PLAYER, RANDOM, EXPLOSION;
     
     public static PowerupKind[] getPossitiveKinds()
     {
         List<PowerupKind> possitiveKinds = new ArrayList<>();
         
-        possitiveKinds.add(DEFAULT);
         possitiveKinds.add(REVEAL_INVISIBLE);
         possitiveKinds.add(SPLIT_BALLS);
-        possitiveKinds.add(HALF_SPEED);
+        possitiveKinds.add(DECREASED_SPEED);
         possitiveKinds.add(STICKY_PAD);
         possitiveKinds.add(EXTRA_LIFE);
         possitiveKinds.add(BIGGER_PAD);
