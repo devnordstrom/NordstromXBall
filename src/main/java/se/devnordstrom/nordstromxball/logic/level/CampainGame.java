@@ -37,6 +37,31 @@ public class CampainGame
     
     
     
+    private static final String EXPLOSION_TEST_LEVEL_NAME = "Explosion Test";
+    
+    private static final char[][] EXPLOSION_TEST_LEVEL_LAYOUT = {
+            {' ', ' ', ' ', ' ', ' ', ' ', ' ', 'X', 'X', 'X', 'X', ' ', ' ', ' '},
+            {' ', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', ' ', ' ', ' '},
+            {' ', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', ' ', ' ', ' '},
+            {' ', 'K', ' ', 'X', ' ', 'K', ' ', 'X', 'X', 'X', ' ', ' ', ' ', ' '},
+            {' ', 'X', 'K', 'X', 'K', 'X', 'K', 'X', 'K', 't', 't', 't', 'K', ' '},
+            {' ', 'X', 'X', 'K', 'X', 'X', 'X', 'K', 'X', 't', ' ', ' ', ' ', ' '},
+            {' ', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 't', ' ', ' ', ' ', ' '},
+            {' ', 'X', 'X', 'X', 't', 'X', 'X', 'X', 'X', 't', ' ', ' ', ' ', ' '},
+            {' ', 'X', 'X', 'X', 't', 'X', 'X', 'X', 'X', 't', ' ', ' ', ' ', ' '},
+            {' ', 'X', 'X', 'X', 't', 'X', 'X', 'X', 'X', 't', ' ', ' ', ' ', ' '},
+            {' ', 'X', 'X', 'X', 't', 'X', 'X', 'X', 'X', 't', ' ', ' ', ' ', ' '},
+            {' ', 'X', 'X', 'X', 't', 'X', 'X', 'X', 'X', 't', ' ', ' ', ' ', ' '},
+            {' ', 'X', 'X', 'X', 't', 'X', 'X', 'X', 'X', 't', ' ', ' ', ' ', ' '},
+            {' ', 'X', 'X', 'X', 't', 'X', 'X', 'X', 'X', 't', ' ', ' ', ' ', ' '},
+            {' ', 'X', 'X', 'X', 't', ' ', 'X', 'X', 'X', 't', ' ', ' ', ' ', ' '},
+            {' ', 'X', 'X', 'X', ' ', ' ', 'X', 'X', 'X', 'X', 'X', 'X', 'X', ' '},
+            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}
+    };
+    
+    
+    
     private static final String STARTING_LEVEL_NAME = "Intro Level";
     
     private static final char[][] STARTING_LEVEL_LAYOUT = {
@@ -174,13 +199,11 @@ public class CampainGame
         
         List<Level> levels = new ArrayList<>();        
         
-
         levels.add(startingLevel);
         levels.add(secondLevel);        
         levels.add(thirdLevel);
         levels.add(fourthLevel);
         levels.add(fifthLevel);
-        
         
         return levels;        
     }

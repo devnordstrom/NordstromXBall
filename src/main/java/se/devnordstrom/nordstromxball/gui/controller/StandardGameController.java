@@ -24,6 +24,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
@@ -60,6 +61,26 @@ public class StandardGameController extends ScreenController implements EntityCo
 {   
     private static final boolean ENABLE_MOUSE_BALL_SPAWNING = false;
     private static final boolean DISABLE_CURSOR = true;
+    
+    /**
+     * 
+     */
+    private static final double POWERUP_INCREASED_SPEED_MOD = 1.2;
+    
+    /**
+     * 
+     */
+    private static final double POWERUP_DECREASED_SPEED_MOD = 0.7;
+    
+    /**
+     * 
+     */
+    private static final double POWERUP_INCREASED_PAD_MOD = 1.2;
+    
+    /**
+     * 
+     */
+    private static final double POWERUP_DECREASED_PAD_MOD = 0.7;
     
     /**
      * 
@@ -278,7 +299,7 @@ public class StandardGameController extends ScreenController implements EntityCo
     {
         return DISABLE_CURSOR;
     }
-    
+        
     /**
      * This method is syncrhonized so as to avoid ConcurentModificationExceptions
      * since this may occur otherwise.
@@ -287,7 +308,7 @@ public class StandardGameController extends ScreenController implements EntityCo
      */
     @Override
     public synchronized List<PaintableEntity> getEntities() 
-    {            
+    {   
         List<PaintableEntity> paintableEntities = new LinkedList<>();
         
         if(isGameOver()) {
@@ -500,7 +521,6 @@ public class StandardGameController extends ScreenController implements EntityCo
         }
         
         if(!explosionsToRemove.isEmpty()) { //This line caused a concurrentModException.
-            System.out.println("Now removing "+ explosionsToRemove.size() +" explosion(s).");
             explosions.removeAll(explosionsToRemove);
             explosionsToRemove.clear();
         }
@@ -544,9 +564,7 @@ public class StandardGameController extends ScreenController implements EntityCo
     }
           
     private void addPowerup(Powerup powerup)
-    {   
-        System.out.println("addPowerup('"+powerup+"') started!");
-        
+    {           
         switch(powerup.getPowerUpKind()) {
             case EXTRA_BALL:
                 
@@ -602,9 +620,7 @@ public class StandardGameController extends ScreenController implements EntityCo
     }
     
     private void addPowerupAnimation(Powerup powerup)
-    {
-        System.out.println("addPowerupAnimation('"+powerup.toString()+"') started!");
-        
+    {        
         StandardAnimation animation = new StandardAnimation();
         
         animation.setMovementPaused(false);
@@ -631,19 +647,19 @@ public class StandardGameController extends ScreenController implements EntityCo
                 setStickyPads();
                 break;
             case INCREASED_SPEED:
-                modifyBallSpeed(2.0);
+                modifyBallSpeed(POWERUP_INCREASED_SPEED_MOD);
                 break;
             case DECREASED_SPEED:
-                modifyBallSpeed(0.5);
+                modifyBallSpeed(POWERUP_DECREASED_SPEED_MOD);
                 break;
             case EXTRA_LIFE:
                 addExtraLife();
                 break;
             case BIGGER_PAD:
-                setPadWidthMod(1.2);
+                setPadWidthMod(POWERUP_INCREASED_PAD_MOD);
                 break;
             case SMALLER_PAD:
-                setPadWidthMod(0.7);
+                setPadWidthMod(POWERUP_DECREASED_PAD_MOD);
                 break;
             case KILL_PLAYER:
                 killPlayer();
@@ -653,7 +669,7 @@ public class StandardGameController extends ScreenController implements EntityCo
         }
         
         if(powerup.getPowerUpKind() != PowerupKind.KILL_PLAYER) {
-            AudioController.playSoundKind(AudioController.POWERUP_SPAWN);
+            AudioController.playSoundKind(AudioController.POWERUP_ACTIVATED);
             addPowerupAnimation(powerup);
         }
     }
@@ -755,9 +771,7 @@ public class StandardGameController extends ScreenController implements EntityCo
     }
     
     private Collection<TextEntity> getTextEntities() 
-    {
-        long startTimeMs = System.currentTimeMillis();
-        
+    {        
         Collection<TextEntity> textEntities = new LinkedList<>();
         
         
@@ -793,11 +807,7 @@ public class StandardGameController extends ScreenController implements EntityCo
         levelInfoText.setX(DEFAULT_SCREEN_MARGIN);
         levelInfoText.setY(DEFAULT_SCREEN_MARGIN * 3);
         textEntities.add(levelInfoText);
-        
-        long execTimeMs = System.currentTimeMillis() - startTimeMs;
-        
-        System.out.println("getTextEntities() execTimeMs: "+execTimeMs);
-        
+                        
         return textEntities;
     }
     
@@ -1041,13 +1051,14 @@ public class StandardGameController extends ScreenController implements EntityCo
         for(Brick brick : bricks) {
             if(brick == null
                     || brick.isDestroyed()
-                    || !explosionHitbox.intersects(brick.getHitbox())) {
+                    || !explosionHitbox.intersects(brick.getHitbox())
+                    || explosion.hasHitObject(brick)) {
                 continue;
             }
             
             hitBrick(brick);
-           
-            AudioController.playBrickExplosionSound();
+            
+            explosion.addHitObject(brick);
         }
     }
     
@@ -1103,5 +1114,5 @@ public class StandardGameController extends ScreenController implements EntityCo
     private void setGameFinishedScreen()
     {        
         gameOverCallable.call(createHighscoreEntry());
-    }            
+    }
 }

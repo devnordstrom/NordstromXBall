@@ -30,6 +30,8 @@ import se.devnordstrom.nordstromxball.entity.PaintableEntity;
 import se.devnordstrom.nordstromxball.entity.TextEntity;
 import se.devnordstrom.nordstromxball.highscore.HighscoreController;
 import se.devnordstrom.nordstromxball.highscore.HighscoreEntry;
+import se.devnordstrom.nordstromxball.logic.animation.Animation;
+import se.devnordstrom.nordstromxball.logic.animation.StandardAnimation;
 import se.devnordstrom.nordstromxball.util.Callable;
 import se.devnordstrom.nordstromxball.util.MenuUtil;
 import se.devnordstrom.nordstromxball.util.Utils;
@@ -74,6 +76,11 @@ public class GameOverScreenController extends ScreenController
      * 
      */
     private volatile boolean manageSaveEntryToHighscoreRunning;
+    
+    /**
+     * 
+     */
+    private volatile StandardAnimation errorMessageAnimation;
     
     private final Runnable goToMenuRunnable, exitRunnable, showHighscoreRunnable;
     
@@ -238,19 +245,34 @@ public class GameOverScreenController extends ScreenController
         
         Rectangle nameTextBox = new Rectangle(inputX, inputY, inputWidth, inputHeight);
         
+        //Sets the player name input
         Callable<String> callable = (String playerName) -> {
-            if(validateName(playerName)) {
-                manageSaveEntryToHighscore(playerName);                
-            }
+            manageSaveEntryToHighscore(playerName);                
         };
         
-        AnswerTextInputEntity answerTextInputItem = new AnswerTextInputEntity(nameTextBox, callable);
-
-        keyListener = answerTextInputItem.getKeyListener();
-
-        entities.add(answerTextInputItem);
+        AnswerTextInputEntity playerNameTextInput = new AnswerTextInputEntity(nameTextBox, callable);
+        keyListener = playerNameTextInput.getKeyListener();
         
-        currentStatItemY += verticalItemMargin;
+        
+        //Sets the button for adding the highscore entry.
+        Runnable manageSaveHighscore = () -> {
+            manageSaveEntryToHighscore(playerNameTextInput.getText());
+        };
+
+        int saveButtonX = inputX + inputWidth + MenuController.MARGIN_HORIZONTAL;
+        int saveButtonY = inputY 
+                + (int) nameTextBox.getHeight()
+                - AnswerTextInputEntity.TEXT_FIELD_BORDER_MARGIN;
+        
+        MenuItemEntity addEntryButton = MenuUtil
+                .createMenuItemEntity(saveButtonX, saveButtonY, "ADD ENTRY", manageSaveHighscore);
+        
+        entities.add(playerNameTextInput);
+        entities.add(addEntryButton);
+        
+        
+        //Adding extra margin
+        currentStatItemY += 4 * verticalItemMargin;
     }
     
     /**
@@ -260,8 +282,25 @@ public class GameOverScreenController extends ScreenController
      */
     private boolean validateName(String playerName)
     {
-        System.out.println("validateName(...) automatically returning true.");
+        if(playerName == null || playerName.trim().isEmpty()) {            
+            setErrorMessage("Remember to write your name.");
+            return false;
+        }
+        
         return true;
+    }
+    
+    private void setErrorMessage(String errorMsg)
+    {
+        errorMessageAnimation = new StandardAnimation();
+        
+        int errorMessageX = MenuController.MARGIN_HORIZONTAL;
+        
+        TextEntity errorMessageItem = MenuUtil
+                .createTextItem(errorMessageX, currentStatItemY, errorMsg);
+        
+        errorMessageAnimation.addEntity(errorMessageItem);        
+        errorMessageAnimation.start();
     }
     
     /**
@@ -278,12 +317,14 @@ public class GameOverScreenController extends ScreenController
         manageSaveEntryToHighscoreRunning = true;
         
         try {
-            saveEntryToHighscore(playerName);
-                        
-            showHighscoreRunnable.run();
+            if(validateName(playerName)) {
+                saveEntryToHighscore(playerName);
+
+                showHighscoreRunnable.run();
+            }
         } catch(Exception ex) {
             ex.printStackTrace();
-            Utils.showErrorMesage("Couldn't save the entry: " + ex.getMessage(), MainApp.APP_TITLE);
+            setErrorMessage("Couldn't save the entry...");
         } finally {
             manageSaveEntryToHighscoreRunning = false;
         }
@@ -296,9 +337,7 @@ public class GameOverScreenController extends ScreenController
                 
         if(playerName.trim().isEmpty())
             throw new IllegalArgumentException("The playerName must not be empty!");
-        
-        System.out.println("saveEntryToHighscore(...) started!");
-        
+                
         entry.setPlayerName(playerName);
         
         HighscoreController.addHighscoreEntry(entry);
@@ -311,6 +350,10 @@ public class GameOverScreenController extends ScreenController
  
         returnEntities.addAll(entities);
                 
+        if(errorMessageAnimation != null && errorMessageAnimation.isActive()) {
+            returnEntities.addAll(errorMessageAnimation.getEntities());
+        }
+        
         return returnEntities;
     }
     

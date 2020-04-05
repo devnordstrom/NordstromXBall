@@ -39,14 +39,16 @@ public class Ball implements PaintableEntity
     
     private static final int DEFAULT_DIAMETER = 10;
     
-    private static final double DEFAULT_SPEED = 400;
+    private static final double DEFAULT_SPEED = 500;
 
     private static final Color DEFAULT_COLOR = Color.GREEN;
 
     protected double x, y, xDistanceLastMove, yDistanceLastMove, 
             xSpeedMod, ySpeedMod, speed;
-    
+        
     protected static double highestXLastMove, highestYDistanceMove;
+    
+    private Point newMovePoint;
     
     protected int xDir, yDir, diameter;
 
@@ -130,6 +132,12 @@ public class Ball implements PaintableEntity
             highestYDistanceMove = Math.abs(yDistanceLastMove);
         }
         
+        if(isNewMovePointSet()) {
+            this.x = newMovePoint.getX();
+            this.y = newMovePoint.getY();
+            newMovePoint = null;
+        }
+                
         this.x += xDistanceLastMove;
         this.y += yDistanceLastMove;
     }
@@ -138,7 +146,7 @@ public class Ball implements PaintableEntity
     {
         return (int) Math.round(x);
     }
-
+    
     public void setX(double x)
     {
         this.x = x;
@@ -153,7 +161,18 @@ public class Ball implements PaintableEntity
     {
         this.y = y;
     }
-
+    
+    protected void setNewMovePoint(double x, double y)
+    {        
+        this.newMovePoint = new Point();
+        newMovePoint.setLocation(x, y);
+    }
+        
+    protected boolean isNewMovePointSet()
+    {
+        return newMovePoint != null;
+    }
+    
     /**
      * @return the xDir
      */
@@ -274,21 +293,16 @@ public class Ball implements PaintableEntity
     {
         int x = getX();
         int width = 1;
+        int height = diameter;
         if (Math.abs(xDistanceLastMove) > width) {
-            /*
-                It's possible that the ball moved more than one 1 step per frame
-                
-                That's why the width is set to be greater if the horizontal distance
-                was greater than 1.
-            */
-            width = (int) Math.round(Math.abs(xDistanceLastMove));
+            width = (int) Math.ceil(Math.abs(xDistanceLastMove));
         }
         
         if (this.isMovingToTheRight()) {
             x += diameter - width;
         }
            
-        Rectangle xHitBox = new Rectangle(x, getY(), width, diameter);
+        Rectangle xHitBox = new Rectangle(x, getY(), width, height);
         return xHitBox;
     }
 
@@ -318,43 +332,53 @@ public class Ball implements PaintableEntity
         if(!hitbox.intersects(ballHitbox)) {
             return false;
         }
-
+        
+        if(isNewMovePointSet()) {
+            /**
+             * It's possible for a ball to collide with several adjacent
+             * hitboxes in one turn, and if the ball collides with several objects
+             * such as adjacent bricks all the bricks should be hit, however
+             * only once should the balls position/direction be adjusted.
+             */
+            return true;
+        }
+        
+        addBounce();
+        
         //Now we know that a colission has ocurred.
-        if(isHorizontalCollission(hitbox)) {            
+        if(isHorizontalCollission(hitbox)) {
+            double newX;
+            
             //Moves the ball outside the hitbox if it is inside it.
-                        
-            if(isMovingToTheRight() 
-                    && (ballHitbox.getX() + ballHitbox.getWidth()) > hitbox.getX()) {
-                this.setX(hitbox.getX() - ballHitbox.getWidth() - 1);
-            } else if(!isMovingToTheRight() 
-                    && ballHitbox.getX() < (hitbox.getX() + hitbox.getWidth())) {
-
-                double newX = hitbox.getX() + hitbox.getWidth() + 1;
-
-                this.setX(newX);
+            if(isMovingToTheRight()) {
+                //Forces the ball to be outside the hitbox to the left.
+                newX = hitbox.getX() - ballHitbox.getWidth() - 1;
+            } else {
+                //Forces the ball to be outside the hitbox to the right.
+                newX = hitbox.getX() + hitbox.getWidth() + 1;
             }
-                
+            
+            setNewMovePoint(newX, y);
             invertxDir();
         } else {
             /*
                 Must've been a vertival collission if it wasn't a 
                 horizontal one since we know a collision happended.
-            */            
-            if(isMovingDown() 
-                    && (ballHitbox.getY()+ballHitbox.getHeight()) > hitbox.getY()) {
-                
-                this.setY(hitbox.getY() - ballHitbox.getHeight() - 1);
-                
-            } else if(!isMovingDown() 
-                    && ballHitbox.getY() < (hitbox.getY() + hitbox.getHeight())) {
-                this.setY(hitbox.getY() + hitbox.getHeight() + 1);
+            */    
+            
+            double newY;
+            
+            //Evaluates if the ball is inside the hitbox and if so forces it outside.
+            if(isMovingDown()) {
+                newY = hitbox.getY() - ballHitbox.getHeight() - 1;
+            } else {
+                newY = hitbox.getY() + hitbox.getHeight() + 1;                
             }
             
+            setNewMovePoint(x, newY);
             invertyDir();
         }
         
-        addBounce();
-
         return true;
     }
 
@@ -369,9 +393,10 @@ public class Ball implements PaintableEntity
         Rectangle ballHorizontalHitbox = this.getXHitbox();
         Rectangle targetHorizontalHitbox;
 
-        int thx, thy = (int) hitbox.getY(), thwidth = 1, thheight = (int) hitbox.getHeight();
+        int thx, thy = (int) Math.round(hitbox.getY()), 
+                thwidth = 1, thheight = (int) hitbox.getHeight();
         if(isMovingToTheRight()) {
-            thx = ((int) hitbox.getX());
+            thx = (int) Math.round(hitbox.getX());
         } else {
             thx = (int) Math.round(hitbox.getX() + hitbox.getWidth()) - thwidth;
         }

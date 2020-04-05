@@ -24,13 +24,16 @@ import se.devnordstrom.nordstromxball.entity.EntityController;
  */
 public class GameLoopController implements Runnable
 {
-    private long lastLoopTimeNanos, totalRepaints, totalFrames;
+    public static final boolean DEBUG_FPS = false;
+    
+    private long lastLoopTimeNanos, totalRepaints,
+            totalFrames, lastFpsTimeMs, lastFpsCount;
     
     private volatile int fps;
     
     private volatile boolean running, paused;
-    
-    private static final long TARGET_FPS = 60;
+        
+    private static final long TARGET_FPS = 6000;
     private static final long OPTIMAL_TIME_NANOS = 1000_000_000 / TARGET_FPS;
     
     private volatile EntityController entityController;    
@@ -47,6 +50,8 @@ public class GameLoopController implements Runnable
     @Override
     public void run() 
     {   
+        lastFpsTimeMs = System.nanoTime();
+        
         while(isRunning()) {
             if(isPaused() || entityController == null) {
                 lastLoopTimeNanos = System.nanoTime();
@@ -56,6 +61,21 @@ public class GameLoopController implements Runnable
             }
             
             totalFrames++;
+            lastFpsCount++;
+            
+            /* 
+                Checks if the last time the fps was 
+                meassured is greater than or equal to 10 seconds
+                
+                If so it prints the FPS out.
+            */
+            if(DEBUG_FPS && (System.nanoTime() - lastFpsTimeMs) >= (1000_000_000)) {
+                fps = (int) lastFpsCount;
+                lastFpsCount = 0;
+                lastFpsTimeMs = System.nanoTime();
+                System.out.println("FPS: "+fps);
+            }
+            
             
             long currentNanos = System.nanoTime();
             long updateLengthNanos = currentNanos - lastLoopTimeNanos;

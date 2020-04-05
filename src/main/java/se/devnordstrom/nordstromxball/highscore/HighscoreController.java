@@ -95,9 +95,7 @@ public class HighscoreController
     public static boolean isQualifiedForHighScore(HighscoreEntry entry) 
             throws IOException, ClassNotFoundException
     {    
-        if(entry == null) {
-            throw new IllegalArgumentException("The highscore entry must be set!");
-        }
+        if(entry == null) throw new NullPointerException();
         
         if(entry.getGameMode() == null 
                 || entry.getGameMode().trim().isEmpty()) {
@@ -115,6 +113,21 @@ public class HighscoreController
         Collections.sort(entries);
         Collections.reverse(entries);
         
+        System.out.println("Highscore Entries:");
+        
+        for(int i = 0; i < entries.size(); i++) {
+            HighscoreEntry listedEntry = entries.get(i);
+            
+            if(listedEntry == entry) {
+                System.out.println("["+i+"] " + listedEntry.getPoints() + " (CURRENT ENTRY!)");
+            } else {
+                System.out.println("["+i+"] " + listedEntry.getPoints());
+            }
+        }
+        
+        int currentEntryIndex = entries.indexOf(entry);
+        
+        System.out.println("currentEntryIndex: " + currentEntryIndex);
         
         /*
             Since only a certain number of entries are saved/shown.
@@ -124,7 +137,7 @@ public class HighscoreController
             entry will not qualify.
         */
         
-        return entries.indexOf(entry) < DISPLAY_HIGHSCORE_MAXIMUM;
+        return currentEntryIndex < DISPLAY_HIGHSCORE_MAXIMUM;
     }
     
     /**
@@ -140,7 +153,6 @@ public class HighscoreController
      */
     public static int getLowestQualifyingPointsForGameMode(String gameMode) throws IOException, ClassNotFoundException
     {
-
         HighscoreEntry entry = getLowestQualifyingHighscoreForGameMode(gameMode);
 
         if(entry == null) {
@@ -148,7 +160,6 @@ public class HighscoreController
         } else {
             return entry.getPoints()+1;
         }
-        
     }
     
     /**
@@ -172,7 +183,9 @@ public class HighscoreController
             return null;
         }
         
-        return entryList.get(entryList.size() - 1);
+        int lowestQualifyingIndex = Math.min(entryList.size()-1, DISPLAY_HIGHSCORE_MAXIMUM-1);
+        
+        return entryList.get(lowestQualifyingIndex);
     }
     
     /**

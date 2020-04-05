@@ -19,6 +19,7 @@ package se.devnordstrom.nordstromxball.entity.powerup;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.util.HashSet;
 import se.devnordstrom.nordstromxball.entity.MovableEntity;
 
 /**
@@ -31,7 +32,7 @@ public class Explosion extends MovableEntity
     private static final int DEFAULT_HEIGHT = 75;
     
     private static final int OPACITY_RGBA = 255/2;
-    private static final long DURATION_MS = 500;
+    private static final long DURATION_MS = 250;
     
     public static final Color DEFAULT_COLOR = Color.ORANGE;
     public static final Color FLASH_COLOR = new Color(255, 255, 255, OPACITY_RGBA);
@@ -39,6 +40,8 @@ public class Explosion extends MovableEntity
     private int width, height;
     
     private long startTimeMs;
+    
+    private final HashSet hitObjects = new HashSet();
     
     public Explosion()
     {
@@ -62,9 +65,7 @@ public class Explosion extends MovableEntity
     
     @Override
     public void paint(Graphics g) 
-    {   
-        
-        
+    {    
         g.setColor(getColor());
         g.fillRect(getX(), getY(), width, height);
     }
@@ -85,5 +86,15 @@ public class Explosion extends MovableEntity
         Rectangle hitbox = new Rectangle(getX(), getY(), width, height);
         
         return hitbox;
+    }
+    
+    public void addHitObject(Object obj)
+    {
+        hitObjects.add(obj);
+    }
+    
+    public boolean hasHitObject(Object obj)
+    {
+        return hitObjects.contains(obj);
     }
 }

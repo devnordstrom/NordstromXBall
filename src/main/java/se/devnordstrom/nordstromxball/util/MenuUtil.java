@@ -55,9 +55,9 @@ public class MenuUtil
     
     public static final int MENU_ITEM_HEIGHT = 50;
     
-    private static final int MENU_TEXT_MARGIN_X = 0;
+    public static final int MENU_TEXT_MARGIN_X = 0;
     
-    private static final int MENU_TEXT_MARGIN_Y = 0;
+    public static final int MENU_TEXT_MARGIN_Y = 0;
     
     public static TextEntity createTextItem(int x, int y, String text)
     {

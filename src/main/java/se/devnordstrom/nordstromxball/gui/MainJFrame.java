@@ -39,6 +39,10 @@ import se.devnordstrom.nordstromxball.logic.GameLoopController;
  */
 public class MainJFrame extends javax.swing.JFrame 
 {
+    
+    private static long lastRepaintFpsCountTimeMs = System.currentTimeMillis();
+    private volatile long repaintForSecondCount;
+    
     /**
      * Creates new form MainJFrame
      * 
@@ -53,6 +57,13 @@ public class MainJFrame extends javax.swing.JFrame
         Runnable repaintRunnable = () -> {
             SwingUtilities.invokeLater(()-> {
                 gameScreenJPanel.repaint();
+
+                repaintForSecondCount++;
+                
+                if(System.currentTimeMillis() - lastRepaintFpsCountTimeMs  >= (1000)) {
+                    lastRepaintFpsCountTimeMs = System.currentTimeMillis();
+                    repaintForSecondCount = 0;
+                }
             });
         };      
         
@@ -134,7 +145,6 @@ public class MainJFrame extends javax.swing.JFrame
         }
 
         if(screenController.getKeyListener() != null) {
-            System.out.println("MainJFrame now adding key listener...");
             addKeyListener(screenController.getKeyListener());
         }
     }

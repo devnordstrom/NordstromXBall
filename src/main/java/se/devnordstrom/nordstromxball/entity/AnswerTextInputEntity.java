@@ -47,8 +47,10 @@ public class AnswerTextInputEntity implements PaintableEntity
     
     private static final Color BACKGROUND_COLOR = Color.BLACK;
     
-    private static final int TEXT_FIELD_BORDER_WIDTH = 2;
+    public static final int TEXT_FIELD_BORDER_MARGIN = 2;
     
+    public static final int TEXT_FIELD_BORDER_WIDTH = 2;
+
     public static final int DEFAULT_MAX_CHAR_LENGTH = 10;
     
     private static final boolean CARET_ENABLED = true;
@@ -110,15 +112,7 @@ public class AnswerTextInputEntity implements PaintableEntity
 
     @Override
     public void paint(Graphics g) {
-        
-        Color orgColor = g.getColor();
-        Font orgFont = g.getFont();
-        
         paintTextField(g);
-        
-        g.setColor(orgColor);
-        g.setFont(orgFont);
-        
     }
     
     private void paintTextField(Graphics g) {
@@ -130,10 +124,10 @@ public class AnswerTextInputEntity implements PaintableEntity
         
         //Paints background
         g.setColor(BACKGROUND_COLOR);
-        g.fillRect(getX() + TEXT_FIELD_BORDER_WIDTH, 
-                getY() + TEXT_FIELD_BORDER_WIDTH, 
-                (int) rectangle.getWidth() - (TEXT_FIELD_BORDER_WIDTH * 2), 
-                (int) rectangle.getHeight() - (TEXT_FIELD_BORDER_WIDTH * 2));
+        g.fillRect(getX() + TEXT_FIELD_BORDER_MARGIN, 
+                getY() + TEXT_FIELD_BORDER_MARGIN, 
+                (int) rectangle.getWidth() - (TEXT_FIELD_BORDER_MARGIN * 2), 
+                (int) rectangle.getHeight() - (TEXT_FIELD_BORDER_MARGIN * 2));
         
         paintInput(g);
         
@@ -147,8 +141,8 @@ public class AnswerTextInputEntity implements PaintableEntity
             text += CARET_CHAR;
         }
 
-        int x = getX() + INPUT_CHARACTER_WIDTH + TEXT_FIELD_BORDER_WIDTH;
-        int y = getY()  + INPUT_CHARACTER_WIDTH + TEXT_FIELD_BORDER_WIDTH;
+        int x = getX() + INPUT_CHARACTER_WIDTH + TEXT_FIELD_BORDER_MARGIN;
+        int y = getY()  + INPUT_CHARACTER_WIDTH + TEXT_FIELD_BORDER_MARGIN;
         
         g.setFont(FONT);
         g.setColor(COLOR);

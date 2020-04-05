@@ -25,9 +25,6 @@ public class MainApp
     
     public static final String OUTPUT_ERROR_FILE = LOG_DIR + File.separator + "output-error.txt";
     
-    /**
-     * 
-     */
     public static final String APP_TITLE = "NordstromXBall";
     
     public static final String AUTHOR = "Orville Nordström";

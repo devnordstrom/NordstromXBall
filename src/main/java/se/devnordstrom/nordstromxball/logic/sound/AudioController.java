@@ -21,6 +21,9 @@ import java.net.URL;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Queue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -32,27 +35,9 @@ import javax.sound.sampled.UnsupportedAudioFileException;
  * @author User
  */
 public class AudioController 
-{    
-    /*
-        Sound effects needed,
-        
-        When bouncing against a pad
-    
-        When bouncing against a wall
-    
-        When breaking a brick
-    
-        When a good powerup is spawned
-    
-        When a negative powerup is spawned
-    
-        When a powerup is activated.
-    
-        When an explosion occurs
-    */
-    
+{   
     private static boolean playSounds = true;
-    
+        
     private static final String[] BOUNCE_SOUND_NAMES = new String[]{"bounce_1.wav", 
             "bounce_2.wav", "bounce_3.wav"};
     
@@ -75,10 +60,12 @@ public class AudioController
             POWERUP_KILL_SPAWN, POWERUP_SPAWN
     };
     
+    private static final BlockingQueue<String> soundQueue = new LinkedBlockingQueue<>();
+    
+    private static Thread audioThread;
+    
     public static void loadSound()
-    {
-        long startTimeMs = System.currentTimeMillis();
-                        
+    {                        
         try {
             URL url = AudioController.class.getClassLoader().getResource(SOUND_DIR);
 
@@ -102,14 +89,33 @@ public class AudioController
                 soundKindMap.put(soundName, entry);
             }
             
-            long execTimeMs = System.currentTimeMillis()-startTimeMs;
-            System.out.println("loadSound() now finished! ExecTimeMS: "+execTimeMs);
-            System.out.println("soundKindMap:");
-            System.out.println(soundKindMap);
-            
+            loadAudioThread();
         } catch(Exception ex) {
             ex.printStackTrace();
         }
+    }
+        
+    private static void loadAudioThread()
+    {
+        if(audioThread != null) 
+            throw new IllegalStateException("The audioThread must not be null!");
+        
+        audioThread = new Thread (()-> {
+            while(true) {
+                try {
+                    String soundKind = soundQueue.take();
+                                        
+                    doPlaySoundKind(soundKind);
+                    Thread.sleep(1);
+                } catch(Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+        
+        audioThread.setName("Audio Thread");
+        
+        audioThread.start();
     }
     
     /**
@@ -126,13 +132,15 @@ public class AudioController
         playSound(bounceSound);
     }
     
-    public static void playBrickExplosionSound()
-    {
-        //Do nothing as of now.
-    }
-    
     public static void playSoundKind(String soundName)
     {
+        if(soundQueue.contains(soundName)) return;
+        
+        soundQueue.add(soundName);
+    }
+    
+    public static void doPlaySoundKind(String soundName)
+    {   
         String entries = soundKindMap.get(soundName);
         if(entries == null) {
             System.err.println("playSoundKind(...)"
@@ -146,14 +154,11 @@ public class AudioController
         
         playSound(soundEntries[index]);
     }
-            
-            
+
     public static void playSound(String soundName)
     {       
         String fullName = SOUND_DIR+File.separator+soundName;
-        
-        System.out.println("playSound('"+fullName+"')");
-        
+                
         URL url = AudioController.class.getClassLoader().getResource(fullName);
         playSound(url);
     }
@@ -162,16 +167,12 @@ public class AudioController
     {
         if(!playSounds) return;
         
-        AudioInputStream ais = null;
-        Clip clip = null;
-        
         try {
-            ais = AudioSystem.getAudioInputStream(url);
+            AudioInputStream ais = AudioSystem.getAudioInputStream(url);
 
-            clip = AudioSystem.getClip();
+            Clip clip = AudioSystem.getClip();
             clip.open(ais);
             clip.start();
-            
         } catch(Exception ex) {
             ex.printStackTrace();
         }

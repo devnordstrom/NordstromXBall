@@ -45,8 +45,8 @@ public class Pad implements PaintableEntity
         
     protected final Collection<Ball> attachedBalls;
     
-    protected boolean sticky;
-    
+    protected volatile boolean sticky, releaseAllAttachedBalls;
+        
     public Pad()
     {
         color = DEFAULT_COLOR;
@@ -106,6 +106,7 @@ public class Pad implements PaintableEntity
     {
         int targetX = getTargetX();
         setX(targetX);
+        
         //This implementation can only move horizontally and instantly so targetY is ignored.
         
         moveAttachedBalls();
@@ -242,7 +243,13 @@ public class Pad implements PaintableEntity
     }
     
     public void moveAttachedBalls()
-    {           
+    {   
+        if(releaseAllAttachedBalls) {
+            doReleaseAttachedBalls();
+            releaseAllAttachedBalls = false;
+            return;
+        }
+        
         int targetXDifference = targetX - lastTargetX;
         
         Collection<Ball> balls = new ArrayList<>(attachedBalls);
@@ -253,10 +260,18 @@ public class Pad implements PaintableEntity
             ball.setX(newBallX);
         }
     }
-    
-    public void releaseBalls()
-    {        
         
+    /**
+     * Settings this variable instead so as to be thread safe since
+     * this may be called from another thread.
+     */
+    public void releaseBalls()
+    {
+        releaseAllAttachedBalls = true;
+    }
+    
+    private void doReleaseAttachedBalls()
+    {
         for(Ball ball : attachedBalls) {
             ball.setAttached(false);
             ball.launchFromPad(this);

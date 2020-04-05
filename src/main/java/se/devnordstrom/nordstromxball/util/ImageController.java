@@ -57,8 +57,6 @@ public class ImageController
                 
                 imgSet.put(imgName, image);
             }
-            
-            System.out.println("ImageController: " + imgSet.keySet().size());
         } catch(Exception ex) {
             ex.printStackTrace();
         }
@@ -93,9 +91,7 @@ public class ImageController
         
         String fullName = IMAGE_DIR + File.separator + imageName;        
         URL imageUrl = Utils.class.getClassLoader().getResource(fullName);
-        
-        System.out.println("fullName: '"+fullName+"', imageUrl: '"+imageUrl+"'");
-        
+                
         BufferedImage image = ImageIO.read(imageUrl);
         
         imgSet.put(imageName, image);
