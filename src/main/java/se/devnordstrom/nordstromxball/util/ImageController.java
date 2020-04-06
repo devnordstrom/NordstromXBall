@@ -21,8 +21,11 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 import javax.imageio.ImageIO;
 
 /**
@@ -34,32 +37,91 @@ public class ImageController
     /**
      * 
      */
+    private static final String EXTENSION = "png";
+    
+    /**
+     * 
+     */
     private static final String IMAGE_DIR = "img";
+    
+    /**
+     * 
+     */
+    private static final String BALL_DIR = "ball";
+    
+    /**
+     * 
+     */
+    private static final String BRICK_DIR = "brick";
+    
+    /**
+     * 
+     */
+    private static final String POWERUP_DIR = "powerup";
     
     /**
      * 
      */
     private static Map<String, BufferedImage> imgSet = new HashMap<>();
     
+    private static final String[] BALL_RESOURCES = new String[]{
+        "ball_default",
+    };
+    
+    private static final String[] BRICK_RESOURCES = new String[]{
+        "brick_ball_brick", "brick_default", 
+        "brick_steel_brick", "brick_sticky_ball_brick", 
+        "brick_tough_brick _hit", "brick_tough_brick"
+    };
+    
+    private static final String[] POWERUP_RESOURCES = new String[] {
+            "powerup_bigger_pad", "powerup_decreased_speed", 
+            "powerup_extra_life", "powerup_increased_speed", 
+            "powerup_kill_player", "powerup_reveal_invisible",
+            "powerup_smaller_pad", "powerup_split_balls", 
+            "powerup_sticky_pad"
+    };
+    
+    
     /**
-     * 
+     * Loads the image resources used so that they can be
+     * quickly retrieved later on.
      */
     public static void load()
     {
         try {
-            URL url = ImageController.class.getClassLoader().getResource(IMAGE_DIR);
-
-            File imgDir = Paths.get(url.toURI()).toFile();
-            String[] imgFiles = imgDir.list();
-                
-            for(String imgName : imgFiles) {
-                BufferedImage image = readImageResource(imgName);
-                
-                imgSet.put(imgName, image);
+            List<String> resources = listAllResources();
+            
+            System.out.println("ImageController load() had " + resources.size() + " resources.");
+            for(String resource : resources) {
+                System.out.println(resource);
+                loadImageResource(resource);
             }
         } catch(Exception ex) {
             ex.printStackTrace();
         }
+    }
+    
+    private static List<String> listAllResources()
+    {
+        List<String> resources = new ArrayList<>();
+        
+        for(String ballResource : BALL_RESOURCES) {
+            String fullName = BALL_DIR + "/" + ballResource + "." + EXTENSION;
+            resources.add(fullName);
+        }
+        
+        for(String brickResource : BRICK_RESOURCES) {
+            String fullName = BRICK_DIR + "/" + brickResource + "." + EXTENSION;
+            resources.add(fullName);
+        }
+        
+        for(String powerupResource : POWERUP_RESOURCES) {
+            String fullName = POWERUP_DIR + "/" + powerupResource + "." + EXTENSION;
+            resources.add(fullName);
+        }
+                
+        return resources;
     }
     
     /**
@@ -78,6 +140,16 @@ public class ImageController
     }
     
     /**
+     * This calls readImageResource which will buffer the image.
+     * 
+     * @param imageName 
+     */
+    private static void loadImageResource(String imageName) throws IOException
+    {
+        readImageResource(imageName);
+    }
+    
+    /**
      * 
      * @param imageName
      * @return
@@ -85,11 +157,18 @@ public class ImageController
      */
     public static BufferedImage readImageResource(String imageName) throws IOException
     {
+        if(imageName == null) 
+            throw new NullPointerException();
+        
+        
         if(imgSet.containsKey(imageName)) {
             return imgSet.get(imageName);
         }
         
-        String fullName = IMAGE_DIR + File.separator + imageName;        
+        String fullName = IMAGE_DIR + "/" + imageName;
+        
+        System.out.println("fullName: "+fullName);
+        
         URL imageUrl = Utils.class.getClassLoader().getResource(fullName);
                 
         BufferedImage image = ImageIO.read(imageUrl);

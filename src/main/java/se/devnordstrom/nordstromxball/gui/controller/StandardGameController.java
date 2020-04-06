@@ -60,6 +60,7 @@ import se.devnordstrom.nordstromxball.util.Callable;
 public class StandardGameController extends ScreenController implements EntityController
 {   
     private static final boolean ENABLE_MOUSE_BALL_SPAWNING = false;
+    
     private static final boolean DISABLE_CURSOR = true;
     
     /**
@@ -88,7 +89,8 @@ public class StandardGameController extends ScreenController implements EntityCo
     private static final long HELP_TEXT_SHOW_TIME_MS = 6 * 1000;
     
     /**
-     * The number of points that will be added to the player per lives after the game is finished.
+     * The number of points that will be added to the player 
+     * per lives after the game is finished.
      */
     private static final int LIFE_POINTS_MULTIPLYER = 5 * 1000;
     
@@ -96,6 +98,21 @@ public class StandardGameController extends ScreenController implements EntityCo
      * 
      */
     private static final int DEFAULT_SCREEN_MARGIN = 30;
+        
+    /**
+     * 
+     */
+    private static final int TEXT_HORIZONTAL_MARGIN = 125;
+    
+    /**
+     * 
+     */
+    private static final String GAME_OVER_TEXT = "GAME OVER!";
+    
+    /**
+     * 
+     */
+    private static final String LIFE_LOST_TEXT = "LIFE LOST!";   
     
     private boolean gameOver, resetLevel, 
             setNextLevel, playerWaitingToServe;
@@ -105,7 +122,7 @@ public class StandardGameController extends ScreenController implements EntityCo
         
     private int fps, moves, movesPerSecond, completedLevels;
     
-    private final int screenWidth, screenHeight;
+    private final int screenWidth, screenHeight, textMaxX;
 
     private final Rectangle screenArea;
     
@@ -130,7 +147,8 @@ public class StandardGameController extends ScreenController implements EntityCo
     {
         this.game = game;
         this.screenWidth = MainJFrame.DEFAULT_WIDTH;
-        this.screenHeight = MainJFrame.DEFAULT_HEIGHT;        
+        this.screenHeight = MainJFrame.DEFAULT_HEIGHT;
+        this.textMaxX = this.screenWidth - TEXT_HORIZONTAL_MARGIN;
         this.screenArea = new Rectangle(0, 0, screenWidth, screenHeight);
         
         //Init fields.
@@ -272,26 +290,28 @@ public class StandardGameController extends ScreenController implements EntityCo
         return gameOver;
     }
     
+    private void setGameOverAnimation()
+    {   
+        StandardAnimation gameOverAnimation = new StandardAnimation();
+                
+        gameOverAnimation.setMovementPaused(true);
+        
+        gameOverAnimation.addEntity(createTextAbovePad(GAME_OVER_TEXT));
+        
+        gameOverAnimation.setAnimationFinishedRunnable(()-> {
+            setGameOver();
+        });
+        
+        gameOverAnimation.start();
+        
+        addAnimation(gameOverAnimation);
+    }
+            
     private void setGameOver()
     {
         gameOver = true;
         
         gameOverCallable.call(createHighscoreEntry());
-    }
-    
-    @Deprecated
-    private Collection<TextEntity> getGameOverEntities()
-    {
-        Collection<TextEntity> textEntities = new LinkedList<>();
-        
-        TextEntity pointText = new TextEntity();
-        pointText.setColor(Color.WHITE);
-        pointText.setX(screenWidth/5);
-        pointText.setY(screenHeight/2);
-        pointText.setText("GAMEOVER MAN, GAMEOVER :( Better luck next time :(");
-        
-        textEntities.add(pointText);
-        return textEntities;
     }
     
     @Override
@@ -315,9 +335,22 @@ public class StandardGameController extends ScreenController implements EntityCo
             return paintableEntities;
         }
         
-        for(Animation animation : currentAnimations) {
+        
+        Iterator<Animation> animationIterator = currentAnimations.iterator();
+        
+        while(animationIterator.hasNext()) {
+            Animation animation = animationIterator.next();
+                                
             if(animation.isActive()) {
                 paintableEntities.addAll(animation.getEntities());
+            } else {
+                Runnable destructorRunnable = animation.getAnimationFinishedRunnable();
+                
+                if(destructorRunnable != null) {
+                    destructorRunnable.run();
+                }
+                
+                animationIterator.remove();
             }
         }
                 
@@ -395,13 +428,13 @@ public class StandardGameController extends ScreenController implements EntityCo
     {
         player.takeLife();
         
-        if(player.getLifeCount() <= 0) {
-            setGameOver();
-        }
-        
         AudioController.playSoundKind(AudioController.PLAYER_LOST_LIFE);
         
-        setKillPlayerAnimation();
+        if(player.getLifeCount() <= 0) {
+            setGameOverAnimation();
+        } else {
+            setKillPlayerAnimation();    
+        }
         
         resetLevel = true;
     }
@@ -412,7 +445,7 @@ public class StandardGameController extends ScreenController implements EntityCo
         
         animation.setMovementPaused(true);
         
-        TextEntity entity = createTextAbovePad("Life lost!");       
+        TextEntity entity = createTextAbovePad(LIFE_LOST_TEXT);       
         
         animation.addEntity(entity);        
         animation.start();
@@ -456,17 +489,48 @@ public class StandardGameController extends ScreenController implements EntityCo
         entity.setColor(Color.WHITE);
         entity.setText(text);
         
-        int textX = screenWidth / 3;
+        int textX;
         
         Pad mainPad = getMainPad();
         if(mainPad != null) {
             textX = mainPad.getX();
+        } else {
+            textX = screenWidth / 3;
+        }
+        
+        if(textX > textMaxX) {
+            textX = textMaxX;
         }
         
         entity.setX(textX);
         entity.setY(screenHeight - (DEFAULT_SCREEN_MARGIN * 2));
         
         return entity;
+    }
+    
+    private void setGameFinishedAnimation()
+    {
+        StandardAnimation animation = new StandardAnimation();
+        
+        animation.setMovementPaused(true);
+        
+        TextEntity entity = new TextEntity();
+        
+        entity.setBold();
+        entity.setColor(Color.WHITE);
+        entity.setText("GAME MODE FINISHED!");
+        
+        entity.setX(screenWidth/3);
+        entity.setY(screenHeight/3);
+        animation.addEntity(entity);        
+        
+        animation.setAnimationFinishedRunnable(()->{
+            setGameFinishedScreen();
+        });
+        
+        animation.start();
+        
+        addAnimation(animation);
     }
     
     private void setAnimationForNextLevel()
@@ -598,11 +662,10 @@ public class StandardGameController extends ScreenController implements EntityCo
                 
             case RANDOM:
                 //Assigns a randomized powerupkind.
+                List<PowerupKind> powerupKinds = PowerupKind.getDefaultKinds();
                 
-                PowerupKind[] powerupKinds = PowerupKind.getPossitiveKinds();
-                
-                int index = random.nextInt(powerupKinds.length);
-                powerup.setPowerUpKind(powerupKinds[index]);
+                int index = random.nextInt(powerupKinds.size());
+                powerup.setPowerUpKind(powerupKinds.get(index));
                 
                 /*
                     The break has intentionally been excluded here
@@ -971,9 +1034,15 @@ public class StandardGameController extends ScreenController implements EntityCo
         }
         
         if(isLevelCleared()) {
-            setNextLevel = true;
+                
+            if(game != null && game.hasNextLevel()) {
+                setNextLevel = true;
+                
+                setAnimationForNextLevel();
+            } else {
+                setGameFinishedAnimation();
+            }
             
-            setAnimationForNextLevel();
         }
     }
     

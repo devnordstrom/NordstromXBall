@@ -19,11 +19,14 @@ package se.devnordstrom.nordstromxball.logic.sound;
 import java.io.File;
 import java.net.URL;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.stream.Stream;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -37,9 +40,6 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 public class AudioController 
 {   
     private static boolean playSounds = true;
-        
-    private static final String[] BOUNCE_SOUND_NAMES = new String[]{"bounce_1.wav", 
-            "bounce_2.wav", "bounce_3.wav"};
     
     public static final String SOUND_DIR = "sound";
     
@@ -65,36 +65,36 @@ public class AudioController
     private static Thread audioThread;
     
     public static void loadSound()
-    {                        
-        try {
-            URL url = AudioController.class.getClassLoader().getResource(SOUND_DIR);
-
-            File soundDir = Paths.get(url.toURI()).toFile();
-            
-            String[] soundFiles = soundDir.list();
-            
-            for(String soundName : SOUND_NAMES) {
-                String entry = "";
-
-                for(String soundFile : soundFiles) {
-                    if(soundFile.startsWith(soundName)) {
-                        if(entry.isEmpty()) {
-                            entry = soundFile;
-                        } else {
-                            entry += "," + soundFile;
-                        }
-                    }
-                }
+    {   
+        try {                   
+            loadSoundKindMap();
                 
-                soundKindMap.put(soundName, entry);
-            }
-            
             loadAudioThread();
         } catch(Exception ex) {
             ex.printStackTrace();
         }
     }
         
+    private static void loadSoundKindMap()
+    {
+        soundKindMap.put(BOUNCE_WALL, 
+                "bounce_wall_1.wav,bounce_wall_2.wav,bounce_wall_3.wav");
+        soundKindMap.put(BOUNCE_PAD, 
+                "bounce_pad_1.wav,bounce_pad_2.wav,bounce_pad_3.wav");
+        soundKindMap.put(BREAK_BRICK, 
+                "break_brick_1.wav,break_brick_2.wav,break_brick_3.wav");
+        soundKindMap.put(EXPLOSION, 
+                "explosion_1.wav,explosion_2.wav,explosion_3.wav");
+        soundKindMap.put(PLAYER_LOST_LIFE, 
+                "player_lost_life.wav");
+        soundKindMap.put(POWERUP_ACTIVATED, 
+                "powerup_activated_1.wav,powerup_activated_2.wav,powerup_activated_3.wav");
+        soundKindMap.put(POWERUP_KILL_SPAWN, 
+                "powerup_kill_spawn_1.wav,powerup_kill_spawn_2.wav,powerup_kill_spawn_3.wav");
+        soundKindMap.put(POWERUP_SPAWN, 
+                "powerup_spawn_1.wav,powerup_spawn_2.wav,powerup_spawn_3.wav");
+    }
+    
     private static void loadAudioThread()
     {
         if(audioThread != null) 
@@ -118,20 +118,6 @@ public class AudioController
         audioThread.start();
     }
     
-    /**
-     * AudioController.playBounceSound();
-     */
-    public static void playBounceSound()
-    {
-        int numberOfBounceSounds = BOUNCE_SOUND_NAMES.length;
-        
-        //Simple randomization
-        int index = (int) (System.currentTimeMillis() % numberOfBounceSounds);
-        String bounceSound = BOUNCE_SOUND_NAMES[index];
-                        
-        playSound(bounceSound);
-    }
-    
     public static void playSoundKind(String soundName)
     {
         if(soundQueue.contains(soundName)) return;
@@ -143,7 +129,7 @@ public class AudioController
     {   
         String entries = soundKindMap.get(soundName);
         if(entries == null) {
-            System.err.println("playSoundKind(...)"
+            System.err.println("playSoundKind('"+soundName+"')"
                     + " returning because the sound was null!");
             return;
         }
@@ -152,13 +138,15 @@ public class AudioController
         
         int index = (int) System.currentTimeMillis() % soundEntries.length;
         
+        String soundEntry = soundEntries[index];
+                
         playSound(soundEntries[index]);
     }
 
     public static void playSound(String soundName)
     {       
-        String fullName = SOUND_DIR+File.separator+soundName;
-                
+        String fullName = SOUND_DIR+"/"+soundName;
+                        
         URL url = AudioController.class.getClassLoader().getResource(fullName);
         playSound(url);
     }
@@ -167,7 +155,7 @@ public class AudioController
     {
         if(!playSounds) return;
         
-        try {
+        try {            
             AudioInputStream ais = AudioSystem.getAudioInputStream(url);
 
             Clip clip = AudioSystem.getClip();

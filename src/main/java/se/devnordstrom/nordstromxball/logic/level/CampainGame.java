@@ -37,47 +37,22 @@ public class CampainGame
     
     
     
-    private static final String EXPLOSION_TEST_LEVEL_NAME = "Explosion Test";
-    
-    private static final char[][] EXPLOSION_TEST_LEVEL_LAYOUT = {
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', 'X', 'X', 'X', 'X', ' ', ' ', ' '},
-            {' ', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', ' ', ' ', ' '},
-            {' ', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', ' ', ' ', ' '},
-            {' ', 'K', ' ', 'X', ' ', 'K', ' ', 'X', 'X', 'X', ' ', ' ', ' ', ' '},
-            {' ', 'X', 'K', 'X', 'K', 'X', 'K', 'X', 'K', 't', 't', 't', 'K', ' '},
-            {' ', 'X', 'X', 'K', 'X', 'X', 'X', 'K', 'X', 't', ' ', ' ', ' ', ' '},
-            {' ', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 't', ' ', ' ', ' ', ' '},
-            {' ', 'X', 'X', 'X', 't', 'X', 'X', 'X', 'X', 't', ' ', ' ', ' ', ' '},
-            {' ', 'X', 'X', 'X', 't', 'X', 'X', 'X', 'X', 't', ' ', ' ', ' ', ' '},
-            {' ', 'X', 'X', 'X', 't', 'X', 'X', 'X', 'X', 't', ' ', ' ', ' ', ' '},
-            {' ', 'X', 'X', 'X', 't', 'X', 'X', 'X', 'X', 't', ' ', ' ', ' ', ' '},
-            {' ', 'X', 'X', 'X', 't', 'X', 'X', 'X', 'X', 't', ' ', ' ', ' ', ' '},
-            {' ', 'X', 'X', 'X', 't', 'X', 'X', 'X', 'X', 't', ' ', ' ', ' ', ' '},
-            {' ', 'X', 'X', 'X', 't', 'X', 'X', 'X', 'X', 't', ' ', ' ', ' ', ' '},
-            {' ', 'X', 'X', 'X', 't', ' ', 'X', 'X', 'X', 't', ' ', ' ', ' ', ' '},
-            {' ', 'X', 'X', 'X', ' ', ' ', 'X', 'X', 'X', 'X', 'X', 'X', 'X', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}
-    };
-    
-    
-    
     private static final String STARTING_LEVEL_NAME = "Intro Level";
     
-    private static final char[][] STARTING_LEVEL_LAYOUT = {
+    private static final char[][] STARTING_LAYOUT = {
             {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
             {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
             {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', 'S', ' ', ' ', ' ', ' ', ' ', 'S', ' ', ' ', ' '},
-            {' ', ' ', ' ', 's', 's', ' ', 'X', 'X', 'X', ' ', 's', 's', ' ', ' '},
-            {' ', ' ', ' ', 't', 't', 't', 't', 't', 't', 't', 't', 't', ' ', ' '},
-            {' ', ' ', ' ', 'd', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'd', ' ', ' '},
-            {' ', ' ', ' ', 'd', ' ', 'b', 'b', ' ', 'b', 'b', ' ', 'd', ' ', ' '},
-            {' ', ' ', ' ', 'd', ' ', 'b', 'b', ' ', 'b', 'b', ' ', 'd', ' ', ' '},
-            {' ', ' ', ' ', 'd', ' ', 'b', 'b', ' ', 'b', 'b', ' ', 'd', ' ', ' '},
-            {' ', ' ', ' ', 'd', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'd', ' ', ' '},
-            {' ', ' ', ' ', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', ' ', ' '},
-            {' ', ' ', ' ', 'X', ' ', ' ', 't', 'X', 't', ' ', ' ', 'X', ' ', ' '},
+            {' ', ' ', ' ', 'S', ' ', 'X', 'X', 'X', 'X', ' ', 'S', ' ', ' ', ' '},
+            {' ', ' ', 's', 's', ' ', 'X', 'X', 'X', 'X', ' ', 's', 's', ' ', ' '},
+            {' ', ' ', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', ' ', ' '},
+            {' ', ' ', 'd', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'd', ' ', ' '},
+            {' ', ' ', 'd', ' ', 'b', 'b', ' ', ' ', 'b', 'b', ' ', 'd', ' ', ' '},
+            {' ', ' ', 'd', ' ', 'b', 'b', ' ', ' ', 'b', 'b', ' ', 'd', ' ', ' '},
+            {' ', ' ', 'd', ' ', 'b', 'b', ' ', ' ', 'b', 'b', ' ', 'd', ' ', ' '},
+            {' ', ' ', 'd', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'd', ' ', ' '},
+            {' ', ' ', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', ' ', ' '},
+            {' ', ' ', 'X', ' ', ' ', 't', 'X', 't', ' ', ' ', ' ', 'X', ' ', ' '},
             {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
             {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
             {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
@@ -86,15 +61,38 @@ public class CampainGame
     };
     
     
+    
+    private static final String BRICK_FORTRESS = "Brick fortress";
+    
+    private static final char[][] BRICK_FORTRESS_LAYOUT = {
+            {' ', 'i', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'i', ' '},
+            {' ', 'i', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'i', ' '},
+            {' ', 'i', 'd', ' ', 'd', 'i', 'i', 'i', 'i', 'd', ' ', 'd', 'i', ' '},
+            {' ', 'i', 'd', 'd', 'd', ' ', ' ', ' ', ' ', 'd', 'd', 'd', 'i', ' '},
+            {' ', 'i', 'd', 'X', 'd', ' ', ' ', ' ', ' ', 'd', 'X', 'd', 'i', ' '},
+            {' ', 'i', 'd', 'X', 'd', ' ', ' ', ' ', ' ', 'd', 'X', 'd', 'i', ' '},
+            {' ', 'i', 'd', 'X', 'd', ' ', ' ', ' ', ' ', 'd', 'X', 'd', 'i', ' '},
+            {' ', 'i', 'd', 'X', 'd', ' ', 'X', 'X', ' ', 'd', 'X', 'd', 'i', ' '},
+            {' ', 'i', 'd', 'X', 'd', 'K', 'X', 'X', 'K', 'd', 'X', 'd', 'i', ' '},
+            {' ', 'i', 'd', 'X', 'd', 't', 't', 't', 't', 'd', 'X', 'd', 'i', ' '},
+            {' ', 'i', 'd', 'X', 'd', 'K', 'K', 'K', 'K', 'd', 'X', 'd', 'i', ' '},
+            {' ', 'i', 'K', 'X', 'K', 'b', 'b', 'b', 'b', 'K', 'X', 'K', 'i', ' '},
+            {' ', 'i', 'd', 'K', 'd', 'K', 'K', 'K', 'K', 'd', 'K', 'd', 'i', ' '},
+            {' ', 'i', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'i', ' '},
+            {' ', 'i', 't', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 't', 'i', ' '},
+            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}
+    };
     
     private static final String SMILEY_LEVEL_NAME = "Big Smiley :)";
     
-    private static final char[][] SMILEY_LEVEL_LAYOUT = new char[][] {
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', 'd', ' ', ' ', ' ', ' ', 'd', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', 'X', ' ', ' ', ' ', ' ', 'X', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', 'd', ' ', ' ', ' ', ' ', 'd', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+    private static final char[][] SMILEY_LAYOUT = new char[][] {
+            {' ', ' ', ' ', ' ', 'd', 'd', ' ', ' ', 'd', 'd', ' ', ' ', ' ', ' '},
+            {' ', ' ', ' ', ' ', 'X', 'X', ' ', ' ', 'X', 'X', ' ', ' ', ' ', ' '},
+            {' ', ' ', ' ', ' ', 'X', 'X', ' ', ' ', 'X', 'X', ' ', ' ', ' ', ' '},
+            {' ', ' ', ' ', ' ', 'd', 'd', ' ', ' ', 'd', 'd', ' ', ' ', ' ', ' '},
+            {' ', ' ', ' ', ' ', ' ', ' ', 'b', 'b', ' ', ' ', ' ', ' ', ' ', ' '},
             {' ', ' ', ' ', ' ', ' ', ' ', 'b', 'b', ' ', ' ', ' ', ' ', ' ', ' '},
             {' ', ' ', ' ', 'd', ' ', ' ', 'b', 'b', ' ', ' ', 'd', ' ', ' ', ' '},
             {' ', ' ', ' ', 'd', ' ', 'b', 'b', 'b', 'b', ' ', 'd', ' ', ' ', ' '},
@@ -114,7 +112,7 @@ public class CampainGame
     
     private static final String BUNKER_LEVEL_NAME = "Ping Pong Bunker";
     
-    private static final char[][] BUNKER_LEVEL_LAYOUT = new char[][] {
+    private static final char[][] BUNKER_LAYOUT = new char[][] {
             {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
             {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
             {' ', ' ', 'i', 'i', 'i', 'i', 'i', 'i', 'i', 'i', 'i', 'i', ' ', ' '},
@@ -139,7 +137,7 @@ public class CampainGame
     
     private static final String SNAKE_LEVEL_NAME = "Brick Snake";
     
-    private static final char[][] SNAKE_LEVEL_LAYOUT = new char[][] {
+    private static final char[][] SNAKE_LAYOUT = new char[][] {
             {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
             {'K', 'K', 'K', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
             {' ', ' ', 'K', 'K', 'K', 'K', 'K', 'K', ' ', 'b', 'b', 'b', ' ', ' '},
@@ -163,7 +161,7 @@ public class CampainGame
     
     private static final String TWO_PILLARS_LEVEL_NAME = "2 Pillars";
     
-    private static final char[][] TWO_PILLARS_LEVEL_LAYOUT = new char[][] {
+    private static final char[][] TWO_PILLARS_LAYOUT = new char[][] {
             {' ', ' ', 'd', 'X', 'd', 'i', ' ', ' ', 'i', 'd', 'X', 'd', ' ', ' '},
             {' ', ' ', 'd', 'X', 'd', 'i', ' ', ' ', 'i', 'd', 'X', 'd', ' ', ' '},
             {' ', ' ', 'd', 'X', 'd', 'i', ' ', ' ', 'i', 'd', 'X', 'd', ' ', ' '},
@@ -186,24 +184,31 @@ public class CampainGame
         
     public static List<Level> loadLevels()
     {
+        
+        
         StandardLevel startingLevel = LevelReader.readDefaultLevel(STARTING_LEVEL_NAME, 
-                STARTING_LEVEL_LAYOUT);
-        StandardLevel secondLevel = LevelReader.readDefaultLevel(SMILEY_LEVEL_NAME, 
-                SMILEY_LEVEL_LAYOUT);                        
-        StandardLevel thirdLevel = LevelReader.readDefaultLevel(BUNKER_LEVEL_NAME, 
-                BUNKER_LEVEL_LAYOUT);
-        StandardLevel fourthLevel = LevelReader.readDefaultLevel(SNAKE_LEVEL_NAME, 
-                SNAKE_LEVEL_LAYOUT);
-        StandardLevel fifthLevel = LevelReader.readDefaultLevel(TWO_PILLARS_LEVEL_NAME,
-                TWO_PILLARS_LEVEL_LAYOUT);
+                STARTING_LAYOUT);
+        StandardLevel brickFortressLevel = LevelReader.readDefaultLevel(BRICK_FORTRESS,
+                BRICK_FORTRESS_LAYOUT);
+        StandardLevel smileyLevel = LevelReader.readDefaultLevel(SMILEY_LEVEL_NAME, 
+                SMILEY_LAYOUT);                        
+        StandardLevel bunkerLevel = LevelReader.readDefaultLevel(BUNKER_LEVEL_NAME, 
+                BUNKER_LAYOUT);
+        StandardLevel snakeLevel = LevelReader.readDefaultLevel(SNAKE_LEVEL_NAME, 
+                SNAKE_LAYOUT);
+        StandardLevel twoPillarLevel = LevelReader.readDefaultLevel(TWO_PILLARS_LEVEL_NAME,
+                TWO_PILLARS_LAYOUT);
         
         List<Level> levels = new ArrayList<>();        
         
+        
         levels.add(startingLevel);
-        levels.add(secondLevel);        
-        levels.add(thirdLevel);
-        levels.add(fourthLevel);
-        levels.add(fifthLevel);
+        levels.add(smileyLevel);        
+        levels.add(bunkerLevel);
+        levels.add(snakeLevel);
+        levels.add(twoPillarLevel);
+        levels.add(brickFortressLevel);
+        
         
         return levels;        
     }

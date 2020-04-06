@@ -37,6 +37,8 @@ public class StandardAnimation implements Animation
     
     private long animationRunTimeMs, startedTimeMs;
     
+    private Runnable animationFinishedRunnable;
+    
     private final List<PaintableEntity> entities;
     
     public StandardAnimation()
@@ -136,5 +138,20 @@ public class StandardAnimation implements Animation
     public void setAnimationRunTimeMs(long animationRunTimeMs) 
     {
         this.animationRunTimeMs = animationRunTimeMs;
+    }
+    
+    /**
+     * 
+     * @param animationFinishedRunnable 
+     */
+    public void setAnimationFinishedRunnable(Runnable animationFinishedRunnable)
+    {
+        this.animationFinishedRunnable = animationFinishedRunnable;
+    }
+    
+    @Override
+    public Runnable getAnimationFinishedRunnable()
+    {
+        return this.animationFinishedRunnable;
     }
 }

@@ -19,8 +19,14 @@ public class MainApp
      */
     public static final boolean SET_OUTPUT_TO_FILE = false;
     
+    /**
+     * 
+     */
     public static final String LOG_DIR = "log";
     
+    /**
+     * 
+     */
     public static final String OUTPUT_FILE = LOG_DIR + File.separator + "output.txt";
     
     public static final String OUTPUT_ERROR_FILE = LOG_DIR + File.separator + "output-error.txt";

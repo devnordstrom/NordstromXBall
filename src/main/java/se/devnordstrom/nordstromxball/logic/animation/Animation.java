@@ -32,4 +32,6 @@ public interface Animation
     public double getOpacity();
     
     public Collection<PaintableEntity> getEntities();
+    
+    public Runnable getAnimationFinishedRunnable();
 }

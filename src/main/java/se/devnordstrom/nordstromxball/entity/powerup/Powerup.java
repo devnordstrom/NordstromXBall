@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Orville Nordström
+ * Copyright (C) 2020 Orville Nordström
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -94,7 +94,7 @@ public class Powerup extends MovableEntity
     
     private BufferedImage getImage()
     {
-        String imageName = "powerup"+ File.separator+"powerup_"
+        String imageName = "powerup/powerup_"
                 + getPowerUpKind().toString().toLowerCase()+".png";
         
         return ImageController.quietReadImageResource(imageName);

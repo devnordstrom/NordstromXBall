@@ -17,6 +17,7 @@
 package se.devnordstrom.nordstromxball.entity.powerup;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -30,7 +31,32 @@ public enum PowerupKind
     BIGGER_PAD, SMALLER_PAD, EXTRA_BALL, 
     EXTRA_STICKY_BALL, KILL_PLAYER, RANDOM, EXPLOSION;
     
-    public static PowerupKind[] getPossitiveKinds()
+    /**
+     * 
+     * @return 
+     */
+    public static List<PowerupKind> getDefaultKinds()
+    {
+        List<PowerupKind> powerupKinds = new ArrayList<>();
+        
+        powerupKinds.addAll(getPossitiveDefaultKinds());
+        
+        powerupKinds.addAll(getNegativeDefaultKinds());
+        
+        return powerupKinds;
+    }
+    
+    public static List<PowerupKind> getNegativeDefaultKinds()
+    {
+        List<PowerupKind> powerupKinds = new ArrayList<>();
+        
+        powerupKinds.add(INCREASED_SPEED);
+        powerupKinds.add(SMALLER_PAD);
+        
+        return powerupKinds;
+    }
+    
+    public static List<PowerupKind> getPossitiveDefaultKinds()
     {
         List<PowerupKind> possitiveKinds = new ArrayList<>();
         
@@ -41,6 +67,6 @@ public enum PowerupKind
         possitiveKinds.add(EXTRA_LIFE);
         possitiveKinds.add(BIGGER_PAD);
         
-        return possitiveKinds.toArray(new PowerupKind[0]);
+        return possitiveKinds;
     }
 }
