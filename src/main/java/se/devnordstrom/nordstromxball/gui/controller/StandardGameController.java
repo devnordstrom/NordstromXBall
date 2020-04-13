@@ -59,8 +59,14 @@ import se.devnordstrom.nordstromxball.util.Callable;
  */
 public class StandardGameController extends ScreenController implements EntityController
 {   
-    private static final boolean ENABLE_MOUSE_BALL_SPAWNING = false;
+    /**
+     * 
+     */
+    private static final boolean SHOW_FPS = false;
     
+    /**
+     * 
+     */
     private static final boolean DISABLE_CURSOR = true;
     
     /**
@@ -117,8 +123,7 @@ public class StandardGameController extends ScreenController implements EntityCo
     private boolean gameOver, resetLevel, 
             setNextLevel, playerWaitingToServe;
         
-    private volatile double totalDeltaForSecond, combinedDeltas,
-            highestDelta = 0.1;
+    private volatile double totalDeltaForSecond, combinedDeltas;
         
     private int fps, moves, movesPerSecond, completedLevels;
     
@@ -135,8 +140,9 @@ public class StandardGameController extends ScreenController implements EntityCo
     private final Game game;
     private final Random random;
     private final Player player;
+    private final Callable<HighscoreEntry> gameOverCallable;
+    
     private Level currentLevel;
-    private Callable<HighscoreEntry> gameOverCallable;
     
     /**
      * 
@@ -259,11 +265,6 @@ public class StandardGameController extends ScreenController implements EntityCo
         return playerWaitingToServe;
     }
     
-    private void createBall() 
-    {
-        prepareForServ();
-    }
-    
     private void movePlayerPads(int x, int y) 
     {   
         if(isMovementPaused()) return;
@@ -321,7 +322,7 @@ public class StandardGameController extends ScreenController implements EntityCo
     }
         
     /**
-     * This method is syncrhonized so as to avoid ConcurentModificationExceptions
+     * This method is synchronized so as to avoid ConcurentModificationExceptions
      * since this may occur otherwise.
      * 
      * @return 
@@ -335,7 +336,7 @@ public class StandardGameController extends ScreenController implements EntityCo
             return paintableEntities;
         }
         
-        
+        //Redo, this caused a concurrent modification exception.
         Iterator<Animation> animationIterator = currentAnimations.iterator();
         
         while(animationIterator.hasNext()) {
@@ -871,6 +872,15 @@ public class StandardGameController extends ScreenController implements EntityCo
         levelInfoText.setY(DEFAULT_SCREEN_MARGIN * 3);
         textEntities.add(levelInfoText);
                         
+        if(SHOW_FPS) {
+            TextEntity fpsInfoText = new TextEntity();
+            fpsInfoText.setText("FPS: "+fps);
+            fpsInfoText.setColor(Color.WHITE);
+            fpsInfoText.setX(DEFAULT_SCREEN_MARGIN);
+            fpsInfoText.setY(DEFAULT_SCREEN_MARGIN * 4);
+            textEntities.add(fpsInfoText);
+        }
+        
         return textEntities;
     }
     
@@ -881,8 +891,6 @@ public class StandardGameController extends ScreenController implements EntityCo
             public void mousePressed(MouseEvent mouseEvent) {
                 if (SwingUtilities.isRightMouseButton(mouseEvent)) {
                     releaseAttachedBalls();
-                } else {
-                    useAction();
                 }
             }
         };
@@ -930,13 +938,6 @@ public class StandardGameController extends ScreenController implements EntityCo
         playerWaitingToServe = false;
     }
     
-    private void useAction()
-    {
-        if(ENABLE_MOUSE_BALL_SPAWNING) {
-            createBall();
-        }
-    }
-    
     private void setNextLevel()
     {
         if(game.hasNextLevel()) {
@@ -956,10 +957,8 @@ public class StandardGameController extends ScreenController implements EntityCo
         
         if(totalDeltaForSecond >= 1.0) {
             fps = (int) Math.round(((double) movesPerSecond) / totalDeltaForSecond);
-        }
-        
-        if(delta > highestDelta) {
-            highestDelta = delta;
+            movesPerSecond = 0;
+            totalDeltaForSecond = 0;
         }
         
         if(isMovementPaused()) return;
@@ -984,12 +983,15 @@ public class StandardGameController extends ScreenController implements EntityCo
                 
         Collection<Ball> balls = getBalls();
         
+        
         //The player dies if there are no active balls.
         if(balls.isEmpty()) {
             this.killPlayer();
             return;
         }
         
+        
+        //Check all the balls for colissions.
         for(Ball ball : balls) {
             if(ball == null || ball.isAttached()) {
                 continue;
@@ -1001,13 +1003,14 @@ public class StandardGameController extends ScreenController implements EntityCo
                 if(ball.isVital()) {
                     this.killPlayer();
                     return;
-                }                
+                }
+                
                 removeBall(ball);
                 continue;
             }
         }
 
-        
+        //Check all powerups
         for(Powerup powerup : getPowerUps()) {            
             if(hasFallenOutsideScreen(powerup.getHitbox())) {
                 removePowerup(powerup);
@@ -1023,7 +1026,8 @@ public class StandardGameController extends ScreenController implements EntityCo
                 }
             }
         }
-
+        
+        //Checks all the explosions.
         for(Explosion explosion : getExplosions()) {
             if(explosion == null || !explosion.isActive()) {
                 removeExplosion(explosion);
@@ -1040,6 +1044,8 @@ public class StandardGameController extends ScreenController implements EntityCo
                 
                 setAnimationForNextLevel();
             } else {
+                completedLevels++;
+                
                 setGameFinishedAnimation();
             }
             
@@ -1076,13 +1082,15 @@ public class StandardGameController extends ScreenController implements EntityCo
         }
         
         
-        //Check collissions for all bricks.
+        //Check collisions for all bricks.
         for (Brick brick : getBricks()) {
             if (ball.collidesWith(brick)) {
                 hitBrick(brick);
             }
         }
                 
+        
+        //Check/manage collisions with pads
         for (Pad pad : pads) {
             if(ball.collidesWith(pad)) {
                 AudioController.playSoundKind(AudioController.BOUNCE_PAD);
@@ -1137,9 +1145,9 @@ public class StandardGameController extends ScreenController implements EntityCo
      * @param rectangle
      * @return 
      */
-    private boolean hasFallenOutsideScreen(Rectangle rectangle) 
+    private boolean hasFallenOutsideScreen(Rectangle object) 
     {        
-        return screenArea.getHeight() < rectangle.getY();
+        return screenArea.getHeight() < object.getY();
     }
        
     /**

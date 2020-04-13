@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Orville Nordström
+ * Copyright (C) 2020 Orville Nordström
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,10 +39,6 @@ import se.devnordstrom.nordstromxball.logic.GameLoopController;
  */
 public class MainJFrame extends javax.swing.JFrame 
 {
-    
-    private static long lastRepaintFpsCountTimeMs = System.currentTimeMillis();
-    private volatile long repaintForSecondCount;
-    
     /**
      * Creates new form MainJFrame
      * 
@@ -55,15 +51,12 @@ public class MainJFrame extends javax.swing.JFrame
         initComponents();
         
         Runnable repaintRunnable = () -> {
+            if(manageRepaintGUIRunning) {
+                return;
+            }
+            
             SwingUtilities.invokeLater(()-> {
-                gameScreenJPanel.repaint();
-
-                repaintForSecondCount++;
-                
-                if(System.currentTimeMillis() - lastRepaintFpsCountTimeMs  >= (1000)) {
-                    lastRepaintFpsCountTimeMs = System.currentTimeMillis();
-                    repaintForSecondCount = 0;
-                }
+                manageRepaintGUI();
             });
         };      
         
@@ -71,6 +64,23 @@ public class MainJFrame extends javax.swing.JFrame
         
         gameLoopThread = new Thread(gameLoopController);
         gameLoopThread.setName("gameLoopThread");
+    }
+    
+    private void manageRepaintGUI()
+    {        
+        if(manageRepaintGUIRunning) {
+            return;
+        }
+        
+        manageRepaintGUIRunning = true;
+        
+        try {
+            gameScreenJPanel.repaint();
+        } catch(Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            manageRepaintGUIRunning = false;
+        }
     }
     
     private void paintGameScreen(Graphics g)
@@ -249,12 +259,14 @@ public class MainJFrame extends javax.swing.JFrame
     
     public static final int DEFAULT_WIDTH = 700;
     public static final int DEFAULT_HEIGHT = 500;
-    
+        
     private volatile ScreenController screenController;
 
     private final GameLoopController gameLoopController;
 
     private final Thread gameLoopThread;
+    
+    private volatile boolean manageRepaintGUIRunning;
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel gameScreenJPanel;

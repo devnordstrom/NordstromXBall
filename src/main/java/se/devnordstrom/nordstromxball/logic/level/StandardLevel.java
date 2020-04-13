@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import se.devnordstrom.nordstromxball.entity.brick.Brick;
-import se.devnordstrom.nordstromxball.logic.animation.Animation;
 
 /**
  *
@@ -60,6 +59,7 @@ public class StandardLevel implements Level
      * 
      * @return 
      */
+    @Override
     public boolean isBonusLevel()
     {
         return bonusLevel;
@@ -76,7 +76,7 @@ public class StandardLevel implements Level
      */
     @Override
     public List<Brick> getBricks()
-    {
+    {        
         List<Brick> brickCollection = new ArrayList<>();
         
         for(int row = 0; row < bricks.length; row++) {
@@ -94,7 +94,7 @@ public class StandardLevel implements Level
                 }
             }
         }
-        
+                        
         return brickCollection;
     }
     
@@ -153,12 +153,11 @@ public class StandardLevel implements Level
     @Override
     public boolean isCleared()
     {
-        Collection<Brick> bricks = this.getBricks();
-        for(Brick brick : bricks) {
+        for(Brick brick : getBricks()) {
             if(brick != null 
                     && !brick.isDestroyed()
                     && !brick.isIndestructable()
-                    && brick.isVisible()) { //Invisible bricks need not be cleared if only remain.
+                    && brick.isVisible()) { //Invisible bricks need not be cleared!
                 return false;
             }
         }

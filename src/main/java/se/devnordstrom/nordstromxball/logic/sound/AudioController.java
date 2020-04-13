@@ -116,6 +116,9 @@ public class AudioController
         audioThread.setName("Audio Thread");
         
         audioThread.start();
+       
+        //Plays sound to load the powerup so all subsequent calls will be instant.
+        playSoundKind(POWERUP_SPAWN);
     }
     
     public static void playSoundKind(String soundName)
@@ -137,9 +140,7 @@ public class AudioController
         String[] soundEntries = entries.split(",");
         
         int index = (int) System.currentTimeMillis() % soundEntries.length;
-        
-        String soundEntry = soundEntries[index];
-                
+                        
         playSound(soundEntries[index]);
     }
 

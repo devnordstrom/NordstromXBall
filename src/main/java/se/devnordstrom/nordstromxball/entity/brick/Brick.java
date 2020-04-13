@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Orville Nordström
+ * Copyright (C) 2020 Orville Nordström
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,12 +20,10 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
 import java.util.Random;
 import se.devnordstrom.nordstromxball.entity.PaintableEntity;
 import se.devnordstrom.nordstromxball.entity.powerup.Powerup;
 import se.devnordstrom.nordstromxball.entity.powerup.PowerupKind;
-import se.devnordstrom.nordstromxball.util.Utils;
 
 /**
  *
@@ -74,13 +72,13 @@ public class Brick implements PaintableEntity
                 
         Color color = getColor();
         if(color != null) {
-            g.setColor(getColor());
+            g.setColor(color);
             g.fillRect(getX(), getY(), getWidth(), getHeight());
         }
 
         Color borderColor = getBorderColor();
         if(borderColor != null) {
-            g.setColor(getBorderColor());
+            g.setColor(borderColor);
             g.drawRect(getX(), getY(), getWidth(), getHeight());   
         }
     }
@@ -122,6 +120,8 @@ public class Brick implements PaintableEntity
         Point centerPoint = getCenterPoint();
         
         Powerup powerup = new Powerup();
+        
+        //Spawns the powerup in the midle of the brick.
         double powerUpX = (centerPoint.getX() - (powerup.getDiameter() / 2.0));
         double powerUpY = (centerPoint.getY() - (powerup.getDiameter() / 2.0));
         

@@ -25,7 +25,6 @@ import se.devnordstrom.nordstromxball.entity.PaintableEntity;
 import se.devnordstrom.nordstromxball.entity.brick.Brick;
 import se.devnordstrom.nordstromxball.entity.pad.Pad;
 import se.devnordstrom.nordstromxball.util.ImageController;
-import se.devnordstrom.nordstromxball.util.Utils;
 
 /**
  *
@@ -80,7 +79,7 @@ public class Ball implements PaintableEntity
 
             if(color != null) {
                 g.setColor(color);
-                g.fillRect(getX(), getY(), diameter, diameter);
+                g.fillOval(getX(), getY(), diameter, diameter);
             }
         }
         
@@ -482,7 +481,8 @@ public class Ball implements PaintableEntity
         xSpeedMod = oppositeSide / hypotenuse;
         ySpeedMod = adjacentSide / hypotenuse;
 
-        yDir = -1;  //The ball should always be going up after contact with the pad.
+        //The ball should always be going up after contact with the pad.
+        yDir = -1;
 
         if (ballCenterPoint.getX() < padSurfaceMiddlePoint.getX()) {
             xDir = -1;   //The ball should be going to the left.
@@ -492,7 +492,8 @@ public class Ball implements PaintableEntity
     }
     
     /**
-     * 
+     * This may be usefull for implementations that make the 
+     * ball faster for every bounce.
      */
     public void addBounce()
     {   

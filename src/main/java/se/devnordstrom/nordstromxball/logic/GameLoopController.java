@@ -26,19 +26,18 @@ public class GameLoopController implements Runnable
 {
     public static final boolean DEBUG_FPS = false;
     
+    private static final long MIN_SLEEP_MILLIS = 1;
+    
     private long lastLoopTimeNanos, totalRepaints,
             totalFrames, lastFpsTimeMs, lastFpsCount;
     
     private volatile int fps;
     
     private volatile boolean running, paused;
-        
-    private static final long TARGET_FPS = 6000;
-    private static final long OPTIMAL_TIME_NANOS = 1000_000_000 / TARGET_FPS;
     
     private volatile EntityController entityController;    
     
-    private Runnable repaintRunnable;
+    private final Runnable repaintRunnable;
     
     public GameLoopController(Runnable repaintRunnable)
     {
@@ -63,12 +62,6 @@ public class GameLoopController implements Runnable
             totalFrames++;
             lastFpsCount++;
             
-            /* 
-                Checks if the last time the fps was 
-                meassured is greater than or equal to 10 seconds
-                
-                If so it prints the FPS out.
-            */
             if(DEBUG_FPS && (System.nanoTime() - lastFpsTimeMs) >= (1000_000_000)) {
                 fps = (int) lastFpsCount;
                 lastFpsCount = 0;
@@ -76,23 +69,21 @@ public class GameLoopController implements Runnable
                 System.out.println("FPS: "+fps);
             }
             
-            
             long currentNanos = System.nanoTime();
             long updateLengthNanos = currentNanos - lastLoopTimeNanos;
             
-            double delta = updateLengthNanos / (double) 1000_000_000;
+            double delta = (updateLengthNanos * 1.0) / (1000_000_000 * 1.0);
             
-            this.entityController.moveEntities(delta);
-            
+            entityController.moveEntities(delta);
             
             totalRepaints++;
             repaintRunnable.run();
             
-            
             lastLoopTimeNanos = currentNanos;
             
-            long delayTimeNanos = (lastLoopTimeNanos + OPTIMAL_TIME_NANOS) - currentNanos;
-            sleep(delayTimeNanos/1000_000);
+            
+            //Added to prevent the computer from freezing.
+            sleep(MIN_SLEEP_MILLIS);
         }
     }
     

@@ -21,8 +21,6 @@ import java.util.List;
 import se.devnordstrom.nordstromxball.MainApp;
 import se.devnordstrom.nordstromxball.logic.DefaultGame;
 import se.devnordstrom.nordstromxball.logic.Game;
-import se.devnordstrom.nordstromxball.logic.animation.Animation;
-import se.devnordstrom.nordstromxball.logic.animation.StandardAnimation;
 
 /**
  * Class containing the campaign levels as well as their names.
@@ -60,30 +58,6 @@ public class CampainGame
             {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}
     };
     
-    
-    
-    private static final String BRICK_FORTRESS = "Brick fortress";
-    
-    private static final char[][] BRICK_FORTRESS_LAYOUT = {
-            {' ', 'i', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'i', ' '},
-            {' ', 'i', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'i', ' '},
-            {' ', 'i', 'd', ' ', 'd', 'i', 'i', 'i', 'i', 'd', ' ', 'd', 'i', ' '},
-            {' ', 'i', 'd', 'd', 'd', ' ', ' ', ' ', ' ', 'd', 'd', 'd', 'i', ' '},
-            {' ', 'i', 'd', 'X', 'd', ' ', ' ', ' ', ' ', 'd', 'X', 'd', 'i', ' '},
-            {' ', 'i', 'd', 'X', 'd', ' ', ' ', ' ', ' ', 'd', 'X', 'd', 'i', ' '},
-            {' ', 'i', 'd', 'X', 'd', ' ', ' ', ' ', ' ', 'd', 'X', 'd', 'i', ' '},
-            {' ', 'i', 'd', 'X', 'd', ' ', 'X', 'X', ' ', 'd', 'X', 'd', 'i', ' '},
-            {' ', 'i', 'd', 'X', 'd', 'K', 'X', 'X', 'K', 'd', 'X', 'd', 'i', ' '},
-            {' ', 'i', 'd', 'X', 'd', 't', 't', 't', 't', 'd', 'X', 'd', 'i', ' '},
-            {' ', 'i', 'd', 'X', 'd', 'K', 'K', 'K', 'K', 'd', 'X', 'd', 'i', ' '},
-            {' ', 'i', 'K', 'X', 'K', 'b', 'b', 'b', 'b', 'K', 'X', 'K', 'i', ' '},
-            {' ', 'i', 'd', 'K', 'd', 'K', 'K', 'K', 'K', 'd', 'K', 'd', 'i', ' '},
-            {' ', 'i', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'i', ' '},
-            {' ', 'i', 't', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 't', 'i', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}
-    };
     
     private static final String SMILEY_LEVEL_NAME = "Big Smiley :)";
     
@@ -181,6 +155,31 @@ public class CampainGame
             {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
             {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}
     };
+    
+    
+    private static final String BRICK_FORTRESS = "Brick fortress";
+    
+    private static final char[][] BRICK_FORTRESS_LAYOUT = {
+            {' ', 'i', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'i', ' '},
+            {' ', 'i', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'i', ' '},
+            {' ', 'i', 'd', ' ', 'd', 'i', 'i', 'i', 'i', 'd', ' ', 'd', 'i', ' '},
+            {' ', 'i', 'd', 'd', 'd', ' ', ' ', ' ', ' ', 'd', 'd', 'd', 'i', ' '},
+            {' ', 'i', 'd', 'X', 'd', ' ', ' ', ' ', ' ', 'd', 'X', 'd', 'i', ' '},
+            {' ', 'i', 'd', 'X', 'd', ' ', ' ', ' ', ' ', 'd', 'X', 'd', 'i', ' '},
+            {' ', 'i', 'd', 'X', 'd', ' ', ' ', ' ', ' ', 'd', 'X', 'd', 'i', ' '},
+            {' ', 'i', 'd', 'X', 'd', ' ', 'X', 'X', ' ', 'd', 'X', 'd', 'i', ' '},
+            {' ', 'i', 'd', 'X', 'd', 'K', 'X', 'X', 'K', 'd', 'X', 'd', 'i', ' '},
+            {' ', 'i', 'd', 'X', 'd', 't', 't', 't', 't', 'd', 'X', 'd', 'i', ' '},
+            {' ', 'i', 'd', 'X', 'd', 'K', 'K', 'K', 'K', 'd', 'X', 'd', 'i', ' '},
+            {' ', 'i', 'K', 'X', 'K', 'b', 'b', 'b', 'b', 'K', 'X', 'K', 'i', ' '},
+            {' ', 'i', 'd', 'K', 'd', 'K', 'K', 'K', 'K', 'd', 'K', 'd', 'i', ' '},
+            {' ', 'i', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'i', ' '},
+            {' ', 'i', 't', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 't', 'i', ' '},
+            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}
+    };
+    
         
     public static List<Level> loadLevels()
     {
@@ -188,8 +187,6 @@ public class CampainGame
         
         StandardLevel startingLevel = LevelReader.readDefaultLevel(STARTING_LEVEL_NAME, 
                 STARTING_LAYOUT);
-        StandardLevel brickFortressLevel = LevelReader.readDefaultLevel(BRICK_FORTRESS,
-                BRICK_FORTRESS_LAYOUT);
         StandardLevel smileyLevel = LevelReader.readDefaultLevel(SMILEY_LEVEL_NAME, 
                 SMILEY_LAYOUT);                        
         StandardLevel bunkerLevel = LevelReader.readDefaultLevel(BUNKER_LEVEL_NAME, 
@@ -198,6 +195,8 @@ public class CampainGame
                 SNAKE_LAYOUT);
         StandardLevel twoPillarLevel = LevelReader.readDefaultLevel(TWO_PILLARS_LEVEL_NAME,
                 TWO_PILLARS_LAYOUT);
+        StandardLevel brickFortressLevel = LevelReader.readDefaultLevel(BRICK_FORTRESS,
+                BRICK_FORTRESS_LAYOUT);
         
         List<Level> levels = new ArrayList<>();        
         
@@ -208,7 +207,6 @@ public class CampainGame
         levels.add(snakeLevel);
         levels.add(twoPillarLevel);
         levels.add(brickFortressLevel);
-        
         
         return levels;        
     }
