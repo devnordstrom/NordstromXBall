@@ -21,7 +21,7 @@ import java.util.List;
 
 /**
  *
- * @author Orville N
+ * @author Orville Nordström
  */
 public interface EntityController
 {

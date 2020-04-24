@@ -16,9 +16,6 @@
  */
 package se.devnordstrom.nordstromxball.logic.level;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Random;
 import se.devnordstrom.nordstromxball.entity.brick.BallBrick;
 import se.devnordstrom.nordstromxball.entity.brick.Brick;
@@ -28,8 +25,6 @@ import se.devnordstrom.nordstromxball.entity.brick.SteelBrick;
 import se.devnordstrom.nordstromxball.entity.brick.StickyBallBrick;
 import se.devnordstrom.nordstromxball.entity.brick.ToughBrick;
 import se.devnordstrom.nordstromxball.entity.brick.ToxicBrick;
-import se.devnordstrom.nordstromxball.logic.DefaultGame;
-import se.devnordstrom.nordstromxball.logic.Game;
 
 /**
  *

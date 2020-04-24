@@ -18,7 +18,7 @@ package se.devnordstrom.nordstromxball.entity.brick;
 
 /**
  *
- * @author Orville N
+ * @author Orville Nordström
  */
 public class InvisibleBrick extends ToughBrick
 {    

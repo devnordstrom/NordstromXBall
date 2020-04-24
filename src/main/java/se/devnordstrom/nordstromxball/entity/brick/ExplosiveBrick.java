@@ -24,7 +24,7 @@ import se.devnordstrom.nordstromxball.entity.powerup.PowerupKind;
 
 /**
  *
- * @author Orville N
+ * @author Orville Nordström
  */
 public class ExplosiveBrick extends Brick
 {   

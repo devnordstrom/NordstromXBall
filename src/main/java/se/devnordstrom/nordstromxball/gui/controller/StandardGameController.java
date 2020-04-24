@@ -1012,7 +1012,7 @@ public class StandardGameController extends ScreenController implements EntityCo
 
         //Check all powerups
         for(Powerup powerup : getPowerUps()) {            
-            if(hasFallenOutsideScreen(powerup.getHitbox())) {
+            if(powerup == null || hasFallenOutsideScreen(powerup.getHitbox())) {
                 removePowerup(powerup);
                 continue;
             }
@@ -1157,6 +1157,8 @@ public class StandardGameController extends ScreenController implements EntityCo
      */
     private boolean isMovementPaused()
     {
+        
+        
         for(Animation animation : currentAnimations) {
             if(animation.isActive() && animation.isMovementPaused()) {
                 return true;

@@ -20,7 +20,7 @@ import java.awt.Color;
 
 /**
  *
- * @author User
+ * @author Orville Nordström
  */
 public class StickyBall extends Ball 
 {

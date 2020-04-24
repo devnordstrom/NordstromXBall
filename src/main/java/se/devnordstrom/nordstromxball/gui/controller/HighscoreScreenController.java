@@ -25,7 +25,6 @@ import java.util.List;
 import se.devnordstrom.nordstromxball.entity.MenuItemEntity;
 import se.devnordstrom.nordstromxball.entity.PaintableEntity;
 import se.devnordstrom.nordstromxball.entity.TextEntity;
-import static se.devnordstrom.nordstromxball.gui.controller.GameOverScreenController.DATE_FORMAT;
 import static se.devnordstrom.nordstromxball.gui.controller.TextScreenController.MENU_EXIT_ITEM_X;
 import se.devnordstrom.nordstromxball.highscore.HighscoreController;
 import se.devnordstrom.nordstromxball.highscore.HighscoreEntry;
@@ -33,7 +32,7 @@ import se.devnordstrom.nordstromxball.util.MenuUtil;
 
 /**
  *
- * @author Orville N
+ * @author Orville Nordström
  */
 public class HighscoreScreenController extends ScreenController
 {

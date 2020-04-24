@@ -17,20 +17,17 @@
 package se.devnordstrom.nordstromxball.util;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 import javax.imageio.ImageIO;
 
 /**
  *
- * @author Orville N
+ * @author Orville Nordström
  */
 public class ImageController 
 {
@@ -92,9 +89,7 @@ public class ImageController
         try {
             List<String> resources = listAllResources();
             
-            System.out.println("ImageController load() had " + resources.size() + " resources.");
             for(String resource : resources) {
-                System.out.println(resource);
                 loadImageResource(resource);
             }
         } catch(Exception ex) {
@@ -166,9 +161,7 @@ public class ImageController
         }
         
         String fullName = IMAGE_DIR + "/" + imageName;
-        
-        System.out.println("fullName: "+fullName);
-        
+                
         URL imageUrl = Utils.class.getClassLoader().getResource(fullName);
                 
         BufferedImage image = ImageIO.read(imageUrl);

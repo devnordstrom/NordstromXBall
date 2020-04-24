@@ -23,7 +23,7 @@ import se.devnordstrom.nordstromxball.entity.PaintableEntity;
 
 /**
  *
- * @author Orville N
+ * @author Orville Nordström
  */
 public class StandardAnimation implements Animation 
 {

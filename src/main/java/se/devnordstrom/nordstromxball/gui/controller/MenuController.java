@@ -29,7 +29,7 @@ import se.devnordstrom.nordstromxball.util.MenuUtil;
 
 /**
  *
- * @author Orville N
+ * @author Orville Nordström
  */
 public class MenuController extends ScreenController
 {   

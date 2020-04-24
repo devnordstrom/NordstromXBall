@@ -20,7 +20,7 @@ import java.awt.Graphics;
 
 /**
  *
- * @author Orville N
+ * @author Orville Nordström
  */
 public interface PaintableEntity 
 {

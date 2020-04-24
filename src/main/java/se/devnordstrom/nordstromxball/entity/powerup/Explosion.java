@@ -24,7 +24,7 @@ import se.devnordstrom.nordstromxball.entity.MovableEntity;
 
 /**
  *
- * @author Orville N
+ * @author Orville Nordström
  */
 public class Explosion extends MovableEntity
 {   

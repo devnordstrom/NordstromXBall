@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 User
+ * Copyright (C) 2020 Orville Nordström
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,30 +16,24 @@
  */
 package se.devnordstrom.nordstromxball.logic.sound;
 
-import java.io.File;
 import java.net.URL;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.stream.Stream;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
 
 /**
  *
- * @author User
+ * @author Orville Nordström
  */
 public class AudioController 
-{   
-    private static boolean playSounds = true;
+{       
+    public static final boolean DEFAULT_PLAY_SOUNDS = true;
+
+    private static boolean playSounds = DEFAULT_PLAY_SOUNDS;
     
     public static final String SOUND_DIR = "sound";
     
@@ -138,9 +132,9 @@ public class AudioController
         }
         
         String[] soundEntries = entries.split(",");
+                
+        int index = (int) (System.currentTimeMillis() % soundEntries.length);
         
-        int index = (int) System.currentTimeMillis() % soundEntries.length;
-                        
         playSound(soundEntries[index]);
     }
 

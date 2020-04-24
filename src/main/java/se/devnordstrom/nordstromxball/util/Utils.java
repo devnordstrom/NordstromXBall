@@ -35,7 +35,7 @@ import javax.swing.JOptionPane;
 
 /**
  *
- * @author User
+ * @author Orville Nordström
  */
 public class Utils 
 {

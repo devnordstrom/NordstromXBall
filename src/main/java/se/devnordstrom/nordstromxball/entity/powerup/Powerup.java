@@ -27,7 +27,7 @@ import se.devnordstrom.nordstromxball.util.Utils;
 
 /**
  *
- * @author Orville N
+ * @author Orville Nordström
  */
 public class Powerup extends MovableEntity
 {   

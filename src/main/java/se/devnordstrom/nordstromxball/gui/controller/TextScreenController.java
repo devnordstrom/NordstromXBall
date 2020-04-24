@@ -28,7 +28,7 @@ import se.devnordstrom.nordstromxball.util.MenuUtil;
 
 /**
  *
- * @author Orville N
+ * @author Orville Nordström
  */
 public class TextScreenController extends ScreenController
 {

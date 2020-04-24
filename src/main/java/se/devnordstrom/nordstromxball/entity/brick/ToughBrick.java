@@ -17,14 +17,11 @@
 package se.devnordstrom.nordstromxball.entity.brick;
 
 import java.awt.Color;
-import java.awt.Point;
 import java.util.Random;
-import se.devnordstrom.nordstromxball.entity.powerup.Powerup;
-import se.devnordstrom.nordstromxball.entity.powerup.PowerupKind;
 
 /**
  *
- * @author Orville N
+ * @author Orville Nordström
  */
 public class ToughBrick extends Brick
 {   

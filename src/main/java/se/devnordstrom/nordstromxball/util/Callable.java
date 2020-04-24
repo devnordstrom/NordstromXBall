@@ -18,7 +18,7 @@ package se.devnordstrom.nordstromxball.util;
 
 /**
  *
- * @author Orville N
+ * @author Orville Nordström
  * @param <T>
  */
 public interface Callable<T> 

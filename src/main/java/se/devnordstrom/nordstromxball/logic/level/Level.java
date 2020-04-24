@@ -16,10 +16,8 @@
  */
 package se.devnordstrom.nordstromxball.logic.level;
 
-import java.util.Collection;
 import java.util.List;
 import se.devnordstrom.nordstromxball.entity.brick.Brick;
-import se.devnordstrom.nordstromxball.logic.animation.Animation;
 
 /**
  *

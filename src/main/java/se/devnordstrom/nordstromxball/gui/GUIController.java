@@ -16,7 +16,6 @@
  */
 package se.devnordstrom.nordstromxball.gui;
 
-import javax.swing.JFrame;
 import se.devnordstrom.nordstromxball.MainApp;
 import se.devnordstrom.nordstromxball.gui.controller.GameOverScreenController;
 import se.devnordstrom.nordstromxball.gui.controller.HighscoreScreenController;
@@ -27,12 +26,12 @@ import se.devnordstrom.nordstromxball.gui.controller.StandardGameController;
 import se.devnordstrom.nordstromxball.highscore.HighscoreEntry;
 import se.devnordstrom.nordstromxball.logic.Game;
 import se.devnordstrom.nordstromxball.logic.level.CampainGame;
+import se.devnordstrom.nordstromxball.logic.level.TestGame;
 import se.devnordstrom.nordstromxball.util.Callable;
-import se.devnordstrom.nordstromxball.util.Utils;
 
 /**
  * 
- * @author Orville N
+ * @author Orville Nordström
  */
 public class GUIController 
 {
@@ -61,7 +60,7 @@ public class GUIController
             setGameOverScreen(entry);
         };
 
-        Game game = CampainGame.loadGame();
+        Game game = CampainGame.loadGame();        
         
         //Inits the game controller.
         StandardGameController gameController = new StandardGameController(game, callable);

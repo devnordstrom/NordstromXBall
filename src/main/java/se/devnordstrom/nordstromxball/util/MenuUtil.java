@@ -33,7 +33,7 @@ import se.devnordstrom.nordstromxball.entity.TextEntity;
 
 /**
  *
- * @author Orville N
+ * @author Orville Nordström
  */
 public class MenuUtil 
 {

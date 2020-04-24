@@ -28,24 +28,20 @@ import se.devnordstrom.nordstromxball.util.ImageController;
 
 /**
  *
- * @author Orville N
+ * @author Orville Nordström
  */
 public class Ball implements PaintableEntity 
-{
-    private static final boolean DRAW_SMILEY = false;
-    
-    private static final boolean PAINT_HITBOX = false;
-    
+{    
+    private static final boolean DRAW_ROUND_BALL = false;
+        
     private static final int DEFAULT_DIAMETER = 10;
     
     private static final double DEFAULT_SPEED = 500;
 
     private static final Color DEFAULT_COLOR = Color.GREEN;
-
-    protected double x, y, xDistanceLastMove, yDistanceLastMove, 
+    
+    protected double x, y,  
             xSpeedMod, ySpeedMod, speed;
-        
-    protected static double highestXLastMove, highestYDistanceMove;
     
     private Point newMovePoint;
     
@@ -54,9 +50,7 @@ public class Ball implements PaintableEntity
     protected Color color;
 
     private boolean vital, lethal, attached, sticky;
-    
-    private static BufferedImage smileyImage;
-    
+        
     public Ball() 
     {
         this.xDir = 1;
@@ -72,45 +66,15 @@ public class Ball implements PaintableEntity
     @Override
     public void paint(Graphics g) 
     {
-        if(DRAW_SMILEY && hasImage()) {
-            g.drawImage(loadImage(), getX(), getY(), null);
-        } else {
-            Color color = getColor();
-
-            if(color != null) {
-                g.setColor(color);
-                g.fillOval(getX(), getY(), diameter, diameter);
-            }
-        }
+        Color ballColor = getColor();
         
-        if(PAINT_HITBOX) {
-            g.setColor(Color.RED);
-            
-            //Paints the x hitbox.
-            Rectangle xHitbox = this.getXHitbox();
-            g.fillRect((int) xHitbox.getX(), 
-                    (int) xHitbox.getY(), 
-                    (int) xHitbox.getWidth(), 
-                    (int) xHitbox.getHeight());
+        g.setColor(ballColor);
+        
+        if(DRAW_ROUND_BALL) {
+            g.fillOval(getX(), getY(), diameter, diameter);
+        } else {
+            g.fillRect(getX(), getY(), diameter, diameter);
         }
-    }
-
-    private boolean hasImage()
-    {
-        Color color = getColor();
-        return color != null && color.equals(DEFAULT_COLOR);
-    }
-    
-    private BufferedImage loadImage()
-    {        
-        if(smileyImage == null) {
-            try {
-                smileyImage = ImageController.readImageResource("ball/ball_default.png");
-            } catch(Exception ex) {
-                ex.printStackTrace();
-            }            
-        }
-        return smileyImage;
     }
     
     @Override
@@ -120,25 +84,21 @@ public class Ball implements PaintableEntity
             return;
         }
         
-        xDistanceLastMove = speed * xSpeedMod * getxDir() * delta; 
-        yDistanceLastMove = speed * ySpeedMod * getyDir() * delta;
-        
-        if(highestXLastMove < Math.abs(xDistanceLastMove)) {
-            highestXLastMove = Math.abs(xDistanceLastMove);
-        }
-        
-        if(highestYDistanceMove < Math.abs(yDistanceLastMove)) {
-            highestYDistanceMove = Math.abs(yDistanceLastMove);
-        }
-        
+        /* 
+            Checks if a new point is set for the ball, such as 
+            after a collision if it's inside a brick/wall and if so
+            moves it to the new point.
+        */
         if(isNewMovePointSet()) {
             this.x = newMovePoint.getX();
             this.y = newMovePoint.getY();
             newMovePoint = null;
         }
-                
-        this.x += xDistanceLastMove;
-        this.y += yDistanceLastMove;
+        
+        
+        //Increments the x and y values of the ball.        
+        this.x += speed * xSpeedMod * getxDir() * delta;
+        this.y += speed * ySpeedMod * getyDir() * delta;
     }
 
     public int getX() 
@@ -288,24 +248,6 @@ public class Ball implements PaintableEntity
         return hitBox;
     }
     
-    protected Rectangle getXHitbox() 
-    {
-        int x = getX();
-        int width = 1;
-        int height = diameter;
-        if (Math.abs(xDistanceLastMove) > width) {
-            width = (int) Math.ceil(Math.abs(xDistanceLastMove));
-        }
-        
-        if (this.isMovingToTheRight()) {
-            x += diameter - width;
-        }
-           
-        Rectangle xHitBox = new Rectangle(x, getY(), width, height);
-        return xHitBox;
-    }
-
-
     public Point getCenterPoint() 
     {
         int centerX = (int) Math.round(x + (diameter / 2.0));
@@ -323,7 +265,7 @@ public class Ball implements PaintableEntity
                 
         return collidesWith(brick.getHitbox());
     }
-    
+        
     public boolean collidesWith(Rectangle hitbox)
     {
         Rectangle ballHitbox = getHitbox();
@@ -332,6 +274,7 @@ public class Ball implements PaintableEntity
             return false;
         }
         
+        //Now we know that a colission has ocurred.        
         if(isNewMovePointSet()) {
             /**
              * It's possible for a ball to collide with several adjacent
@@ -341,14 +284,12 @@ public class Ball implements PaintableEntity
              */
             return true;
         }
-        
+                
         addBounce();
         
-        //Now we know that a colission has ocurred.
-        if(isHorizontalCollission(hitbox)) {
-            double newX;
-            
-            //Moves the ball outside the hitbox if it is inside it.
+        double newX = x, newY = y;
+        
+        if(isHorizontalCollision(hitbox)) {
             if(isMovingToTheRight()) {
                 //Forces the ball to be outside the hitbox to the left.
                 newX = hitbox.getX() - ballHitbox.getWidth() - 1;
@@ -357,52 +298,42 @@ public class Ball implements PaintableEntity
                 newX = hitbox.getX() + hitbox.getWidth() + 1;
             }
             
-            setNewMovePoint(newX, y);
             invertxDir();
         } else {
-            /*
-                Must've been a vertival collission if it wasn't a 
-                horizontal one since we know a collision happended.
-            */    
-            
-            double newY;
-            
-            //Evaluates if the ball is inside the hitbox and if so forces it outside.
             if(isMovingDown()) {
                 newY = hitbox.getY() - ballHitbox.getHeight() - 1;
             } else {
                 newY = hitbox.getY() + hitbox.getHeight() + 1;                
             }
             
-            setNewMovePoint(x, newY);
             invertyDir();
         }
+        
+        setNewMovePoint(newX, newY);
         
         return true;
     }
 
     /**
-     * This assumes that a collission happended.
+     * This assumes that a collission happended. 
      * 
      * @param hitbox
      * @return 
      */
-    protected boolean isHorizontalCollission(Rectangle hitbox)
+    protected boolean isHorizontalCollision(Rectangle hitbox)
     {
-        Rectangle ballHorizontalHitbox = this.getXHitbox();
-        Rectangle targetHorizontalHitbox;
-
-        int thx, thy = (int) Math.round(hitbox.getY()), 
-                thwidth = 1, thheight = (int) hitbox.getHeight();
-        if(isMovingToTheRight()) {
-            thx = (int) Math.round(hitbox.getX());
-        } else {
-            thx = (int) Math.round(hitbox.getX() + hitbox.getWidth()) - thwidth;
-        }
+        Rectangle ballHitbox = this.getHitbox();
+        Rectangle intersection = ballHitbox.intersection(hitbox);
         
-        targetHorizontalHitbox = new Rectangle(thx, thy, thwidth, thheight);
+        return intersection.getWidth() <= intersection.getHeight();
+    }
+    
+    protected boolean isVerticalCollision(Rectangle hitbox)
+    {
+        Rectangle ballHitbox = this.getHitbox();
+        Rectangle intersection = ballHitbox.intersection(hitbox);
         
-        return ballHorizontalHitbox.intersects(targetHorizontalHitbox);
+        return intersection.getHeight() <= intersection.getWidth();
     }
     
     
@@ -434,17 +365,18 @@ public class Ball implements PaintableEntity
      */
     public boolean collidesWith(Pad pad) 
     {
-        if (pad == null || yDir == -1) {
+        //Ignore if the ball is moving away from the pads launch direction.
+        if(pad == null || yDir == -1) {
             return false;
         }
         
-        Rectangle hitbox = getHitbox();
-        if (!hitbox.intersects(pad.getHitbox())) {
+        if(!getHitbox().intersects(pad.getHitbox())) {
             return false;
         }
         
         //Now we know a colission has occurred with the pad.
         
+        //If the ball or pad is "sticky" then attach the ball to the pad.
         if(pad.isSticky() || this.isSticky()) {
             pad.attachBall(this);
         } else {
@@ -500,6 +432,10 @@ public class Ball implements PaintableEntity
         //Does nothing in this implementation, but this may be overriden.
     }
     
+    /**
+     * 
+     * @return 
+     */
     public boolean isLethal()
     {
         return lethal;

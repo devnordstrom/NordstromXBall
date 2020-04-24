@@ -23,22 +23,19 @@ import java.awt.event.MouseMotionListener;
 import java.text.SimpleDateFormat;
 import java.util.LinkedList;
 import java.util.List;
-import se.devnordstrom.nordstromxball.MainApp;
 import se.devnordstrom.nordstromxball.entity.AnswerTextInputEntity;
 import se.devnordstrom.nordstromxball.entity.MenuItemEntity;
 import se.devnordstrom.nordstromxball.entity.PaintableEntity;
 import se.devnordstrom.nordstromxball.entity.TextEntity;
 import se.devnordstrom.nordstromxball.highscore.HighscoreController;
 import se.devnordstrom.nordstromxball.highscore.HighscoreEntry;
-import se.devnordstrom.nordstromxball.logic.animation.Animation;
 import se.devnordstrom.nordstromxball.logic.animation.StandardAnimation;
 import se.devnordstrom.nordstromxball.util.Callable;
 import se.devnordstrom.nordstromxball.util.MenuUtil;
-import se.devnordstrom.nordstromxball.util.Utils;
 
 /**
  *
- * @author Orville N
+ * @author Orville Nordström
  */
 public class GameOverScreenController extends ScreenController
 {    

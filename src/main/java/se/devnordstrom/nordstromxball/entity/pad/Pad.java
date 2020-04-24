@@ -28,7 +28,7 @@ import se.devnordstrom.nordstromxball.entity.ball.Ball;
 
 /**
  *
- * @author Orville N
+ * @author Orville Nordström
  */
 public class Pad implements PaintableEntity
 {

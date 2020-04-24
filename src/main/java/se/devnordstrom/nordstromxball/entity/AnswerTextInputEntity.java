@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Orville N
+ * Copyright (C) 2020 Orville Nordström
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,10 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 import se.devnordstrom.nordstromxball.util.Callable;
 
-/**
- *
- * @author Orville N
- */
 /**
  *
  * @author Orville Nordström

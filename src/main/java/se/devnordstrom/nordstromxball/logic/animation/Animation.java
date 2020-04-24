@@ -21,7 +21,7 @@ import se.devnordstrom.nordstromxball.entity.PaintableEntity;
 
 /**
  *
- * @author Orville N
+ * @author Orville Nordström
  */
 public interface Animation 
 {

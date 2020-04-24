@@ -25,7 +25,7 @@ import se.devnordstrom.nordstromxball.logic.Game;
 /**
  * Class containing the campaign levels as well as their names.
  * 
- * @author Orville N
+ * @author Orville Nordström
  */
 public class CampainGame 
 {   
@@ -50,7 +50,7 @@ public class CampainGame
             {' ', ' ', 'd', ' ', 'b', 'b', ' ', ' ', 'b', 'b', ' ', 'd', ' ', ' '},
             {' ', ' ', 'd', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'd', ' ', ' '},
             {' ', ' ', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', ' ', ' '},
-            {' ', ' ', 'X', ' ', ' ', 't', 'X', 't', ' ', ' ', ' ', 'X', ' ', ' '},
+            {' ', ' ', 'X', ' ', ' ', 't', 'X', 'X', 't', ' ', ' ', 'X', ' ', ' '},
             {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
             {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
             {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
@@ -199,7 +199,6 @@ public class CampainGame
                 BRICK_FORTRESS_LAYOUT);
         
         List<Level> levels = new ArrayList<>();        
-        
         
         levels.add(startingLevel);
         levels.add(smileyLevel);        

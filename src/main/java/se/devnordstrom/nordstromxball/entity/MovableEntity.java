@@ -20,7 +20,7 @@ import java.awt.Rectangle;
 
 /**
  *
- * @author Orville N
+ * @author Orville Nordström
  */
 public abstract class MovableEntity implements PaintableEntity
 {
