@@ -40,9 +40,9 @@ public class Ball implements PaintableEntity
 
     private static final Color DEFAULT_COLOR = Color.GREEN;
     
-    protected double x, y,  
+    protected double x, y, xDistanceLastMove, yDistanceLastMove, 
             xSpeedMod, ySpeedMod, speed;
-    
+
     private Point newMovePoint;
     
     protected int xDir, yDir, diameter;
@@ -84,23 +84,19 @@ public class Ball implements PaintableEntity
             return;
         }
         
-        /* 
-            Checks if a new point is set for the ball, such as 
-            after a collision if it's inside a brick/wall and if so
-            moves it to the new point.
-        */
+        xDistanceLastMove = speed * xSpeedMod * getxDir() * delta; 
+        yDistanceLastMove = speed * ySpeedMod * getyDir() * delta;
+        
         if(isNewMovePointSet()) {
             this.x = newMovePoint.getX();
             this.y = newMovePoint.getY();
             newMovePoint = null;
         }
-        
-        
-        //Increments the x and y values of the ball.        
-        this.x += speed * xSpeedMod * getxDir() * delta;
-        this.y += speed * ySpeedMod * getyDir() * delta;
+                
+        this.x += xDistanceLastMove;
+        this.y += yDistanceLastMove;
     }
-
+    
     public int getX() 
     {
         return (int) Math.round(x);
@@ -248,6 +244,25 @@ public class Ball implements PaintableEntity
         return hitBox;
     }
     
+    protected Rectangle getHorizontalHitbox() 
+    {
+        int x = getX();
+        int width = 1;
+        int height = diameter;
+        
+        //So if the ball moved 20 steps horizontally, then the entire area is evaluated.
+        if (Math.abs(xDistanceLastMove) > width) {
+            width = (int) Math.ceil(Math.abs(xDistanceLastMove));
+        }
+        
+        if (isMovingToTheRight()) {
+            x += diameter - width;
+        }
+           
+        Rectangle xHitBox = new Rectangle(x, getY(), width, height);
+        return xHitBox;
+    }
+    
     public Point getCenterPoint() 
     {
         int centerX = (int) Math.round(x + (diameter / 2.0));
@@ -290,6 +305,7 @@ public class Ball implements PaintableEntity
         double newX = x, newY = y;
         
         if(isHorizontalCollision(hitbox)) {
+            
             if(isMovingToTheRight()) {
                 //Forces the ball to be outside the hitbox to the left.
                 newX = hitbox.getX() - ballHitbox.getWidth() - 1;
@@ -315,17 +331,37 @@ public class Ball implements PaintableEntity
     }
 
     /**
-     * This assumes that a collission happended. 
+     * Evaluates if the ball hit the Rectangle horizontally.
+     * 
+     * The reason as to why this doesn't simply check the
+     * intersection is that the ball could've moved several
+     * units/pixels per frame. With 60 FPS and a move speed
+     * of 500 steps/second then the ball will move 8(8.33) steps.
+     * 
+     * Normally this isn't an issue but if the FPS drops temporarily
+     * the ball could theoretically jump over a brick, or move into
+     * it so that the colission is evaluated to be horizontal when
+     * it should've been evaluated to be vertical and hence the distance
+     * moved in the current frame is taken into account when evaluating if
+     * a horizontal collision has occured.
      * 
      * @param hitbox
      * @return 
      */
     protected boolean isHorizontalCollision(Rectangle hitbox)
     {
-        Rectangle ballHitbox = this.getHitbox();
-        Rectangle intersection = ballHitbox.intersection(hitbox);
+        //Creates the target hitbox.
+        int thx, thy = (int) Math.round(hitbox.getY()), 
+                thwidth = 1, thheight = (int) hitbox.getHeight();
+        if(isMovingToTheRight()) {
+            thx = (int) Math.round(hitbox.getX());
+        } else {
+            thx = (int) Math.round(hitbox.getX() + hitbox.getWidth()) - thwidth;
+        }
         
-        return intersection.getWidth() <= intersection.getHeight();
+        Rectangle targetHorizontalHitbox = new Rectangle(thx, thy, thwidth, thheight);
+        
+        return getHorizontalHitbox().intersects(targetHorizontalHitbox);
     }
     
     protected boolean isVerticalCollision(Rectangle hitbox)

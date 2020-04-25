@@ -198,7 +198,7 @@ public class CampainGame
         StandardLevel brickFortressLevel = LevelReader.readDefaultLevel(BRICK_FORTRESS,
                 BRICK_FORTRESS_LAYOUT);
         
-        List<Level> levels = new ArrayList<>();        
+        List<Level> levels = new ArrayList<>();            
         
         levels.add(startingLevel);
         levels.add(smileyLevel);        
